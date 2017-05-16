@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>验证表单功能</title>
+</head>
+<body>
+	<form id="userForm" action="">
+		<p><label for="">姓名：</label><input id="username" name="username" type="text"></p>
+		<p><label for="">邮箱：</label><input id="email" type="text"></p>
+		<p><label for="">密码：</label><input id="password" type="password"></p>
+		<p><input id="submitForm" type="button" value="确定">&nbsp;&nbsp;<input type="reset" value="重置"></p>
+	</form>
+</body>
+</html>
+<script>
+	//progress-1.0--------------
+	//创建一个检测类
+	var CheckObject=function(){};
+	CheckObject.prototype = {
+		checkName:function(name){
+			console.log('checkName:'+name);
+			return this;
+		},
+		checkEmail:function(email){
+			console.log('checkEmail:'+email);
+			return this;
+		},
+		checkPwd:function(pwd){
+			console.log('checkPwd:'+pwd)
+			return this;
+		}
+	};
+	
+	var submitForm=document.getElementById('submitForm');	
+	submitForm.onclick=function(){
+		var username=document.getElementById('username').value;
+		var email=document.getElementById('email').value;
+		var password=document.getElementById('password').value;
+
+		//实例化一个检测类对象
+		var vali=new CheckObject();
+		console.log('submit');
+		vali.checkName(username).checkEmail(email).checkPwd(password);
+	};
+
+	//progress-2.0--------------
+	//progress-3.0--------------
+	//progress-4.0--------------
+</script>
