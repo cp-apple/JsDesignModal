@@ -32,19 +32,43 @@
 		}
 	};
 	
+	//progress-2.0--------------cool!
+	//在原生Function的原型链上添加一个公用方法addMethod（统一添加方法的功能函数）。
+	Function.prototype.addMethod=function(name,fn){
+		this.prototype[name]=fn;
+		return this;
+	}
+	//创建一个方法类
+	var methods=function(){};
+	methods.addMethod('checkIdCard',function(idcard){
+		console.log('函数祖先上添加 checkIdCard 方法。'+idcard);
+		return this;
+	}).addMethod('createApple',function(name){
+		console.log('函数祖先上添加 createApple 方法。链式添加。apple name:'+name);
+		return this;
+	});
+	console.log(methods.prototype);
+	
+	//test result.
 	var submitForm=document.getElementById('submitForm');	
 	submitForm.onclick=function(){
 		var username=document.getElementById('username').value;
 		var email=document.getElementById('email').value;
 		var password=document.getElementById('password').value;
 
+		//progress-1.0
 		//实例化一个检测类对象
 		var vali=new CheckObject();
 		console.log('submit');
 		vali.checkName(username).checkEmail(email).checkPwd(password);
-	};
 
-	//progress-2.0--------------
+		//progress-2.0
+		var cc=new methods();
+		cc.checkIdCard('511200***************').createApple('small cat.');
+	};
+	//接下来理解一下原型链prototype and constructor？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+
+
 	//progress-3.0--------------
 	//progress-4.0--------------
 </script>
