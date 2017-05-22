@@ -67,7 +67,11 @@
 		cc.checkIdCard('511200***************').createApple('small cat.');
 	};
 	//接下来理解一下原型链prototype and constructor？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-
+	//有点晕，只可意会不可言传，自我理解如下：
+	var f = new Function();
+	console.log(f.constructor === Function);// output true
+	console.log(f.constructor === Function.prototype.constructor);// output true
+	//1、类实例化的一个对象都继承prototype上的方法
 
 	//progress-3.0--------------
 	//progress-4.0--------------

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>面向对象编程</title>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+	//创建一个类
+	var Book=function(id,bookname,price){	
+		//私有属性
+		var num=10;
+		//私有方法
+		function checkedId(){
+
+		};
+		//特权方法
+		this.getName=function(){};
+		this.getPrice=function(){};
+		this.setName=function(bookname){
+			this.bookname=bookname+'知识在于积累。';
+		};
+		this.setPrice=function(price){
+			this.price=(price+100)*num;
+		};
+		//对象公有属性
+		this.id=id;
+		//构造器
+		this.setName(bookname);
+		this.setPrice(price);
+	}
+	//类静态公有属性（对象不能访问）
+	Book.isChinese=true;
+	//类静态公有方法（对象不能访问）
+
+	Book.prototype={
+		//公有属性
+		isJSBook:false,
+		//公有方法
+		display:function(){
+			document.write('show a book.---->'+this.bookname+'</br>');
+		}
+	};
+
+	var book1=new Book(1,'my first book',35);
+	var book2=new Book(2,'my second book',135);
+	document.write(book1.bookname+'$'+book1.price+'</br>');   //my first book
+	book1.display()
+	book2.display()
+	document.write(book1.num+'</br>');  //undefined
+	document.write(book1.isJSBook+'</br>');  //false
+	document.write(book2.id+'</br>');  //2
+	document.write(book2.isChinese+'</br>'); //undefined
+	document.write(Book.isChinese);  //true
+</script>
