@@ -54,5 +54,67 @@
 	document.write(book1.isJSBook+'</br>');  //false
 	document.write(book2.id+'</br>');  //2
 	document.write(book2.isChinese+'</br>'); //undefined
-	document.write(Book.isChinese);  //true
+	document.write(Book.isChinese+'</br>');  //true
+
+	//通过闭包函数实现类的静态变量
+	var createBook=(function(){
+		//静态私有变量
+		var bookNum=0;
+		//静态私有方法
+		function checkedBook(name){}
+
+		//创造类
+		function _book(newId,newName,newPrice){		
+			console.log(this);
+			//判断执行过程中this是否指向当前这个对象（如果是则说明是new创建的）
+			if (this instanceof createBook) {				
+			//私有变量
+			var name,price;
+			name=newName;
+			price=newPrice;
+			//私有方法
+			function checkedID(id){}
+			//特权方法
+			this.getName=function(){};
+			this.getPrice=function(){};
+			this.setName=function(name){
+				document.write('我的书名：'+name+'</br>');
+			};
+			this.setPrice=function(price){
+				document.write('我的新书的价格：'+price+'</br>');
+			};
+			//公有属性
+			this.id=newId;
+			//公有方法
+			this.copy=function(){};
+			bookNum++;
+			document.write('创建的第<font style="color:#ff4c4c">'+bookNum+'</font>本书</br>');
+			if(bookNum>100){
+				throw new Error('我们仅出版100本书。');
+			}
+			//构造器
+			this.setName(name);
+			this.setPrice(price);
+			}else{
+				document.write('你创建对象时忘了写关键字new,现在我重新创建这个对象<br/>');
+				return new createBook(newId,newName,newPrice);
+			}
+		}
+		//构建原型
+		_book.prototype={
+			//静态公有属性
+			isJSBook:false,
+			//静态公有方法
+			display:function(){}
+		};
+
+		//返回类
+		return _book;
+	})();
+	document.write('-----------通过闭包函数实现类的静态变量----------</br>');
+	var cBook=new createBook('10','第十本书','100');
+	document.write('我的新书的编号为：'+cBook.id+'</br></br>');
+
+	//创建对象的安全模式
+	var cc=createBook('20','我的第二十本书','200');
 </script>
