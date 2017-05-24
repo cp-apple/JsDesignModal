@@ -65,7 +65,7 @@
 
 		//创造类
 		function _book(newId,newName,newPrice){		
-			console.log(this);
+			//console.log(this);
 			//判断执行过程中this是否指向当前这个对象（如果是则说明是new创建的）
 			if (this instanceof createBook) {				
 			//私有变量
@@ -117,4 +117,38 @@
 
 	//创建对象的安全模式
 	var cc=createBook('20','我的第二十本书','200');
+
+	//继承---------------------------------
+	//1、类式继承
+	//父类
+	function SuperClass(){
+		this.superValue=true;
+		this.goSuper=function(){
+			var i=0;
+			document.write('instance.goSuper='+i+'. You\'re my super star.'+'<br/>');
+			i++;
+		};
+	}
+	//为父类添加共有方法
+	SuperClass.prototype.getSuperValue=function(){
+		this.goSuper();
+		return this.superValue;
+	};
+	//子类
+	function SubClass(){
+		this.subValue=false;
+	}
+	//继承父类
+	SubClass.prototype=new SuperClass();
+	SubClass.prototype.getSubValue=function(){
+		return this.subValue;
+	};
+
+	var instance=new SubClass();
+	document.write('instance.getSuperValue='+instance.getSuperValue()+'<br/>');
+	document.write('instance.getSubValue='+instance.getSubValue()+'<br/>');
+	document.write('instance.superValue='+instance.superValue+'<br/>');
+	document.write('instance.subValue='+instance.subValue+'<br/>');
+	instance.goSuper();
+	console.log(instance);
 </script>
