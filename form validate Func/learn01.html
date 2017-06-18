@@ -71,7 +71,22 @@
 	var f = new Function();
 	console.log(f.constructor === Function);// output true
 	console.log(f.constructor === Function.prototype.constructor);// output true
-	//1、类实例化的一个对象都继承prototype上的方法
+	//a. 类实例化的一个对象都继承prototype上的方法
+	//测试如下
+	var testF=function(id){
+		if(this instanceof testF){
+			this.id=id;
+			console.log('加了new实例化的');
+		}else{
+			console.log('实例化你不加new的么？==');
+			return new testF(id);
+		}
+	}
+	testF.prototype.showId=function(){
+		console.log('id='+this.id);
+	}
+	var a1=testF('0001');
+	a1.showId();
 
 	//progress-3.0--------------
 	//progress-4.0--------------

@@ -118,8 +118,8 @@
 	//创建对象的安全模式
 	var cc=createBook('20','我的第二十本书','200');
 
-	//继承---------------------------------
-	//1、类式继承
+	//继承 begin---------------------------------
+	//1、子类的原型对象————类式继承
 	//父类
 	function SuperClass(){
 		this.superValue=true;
@@ -143,7 +143,6 @@
 	SubClass.prototype.getSubValue=function(){
 		return this.subValue;
 	};
-
 	var instance=new SubClass();
 	document.write('instance.getSuperValue='+instance.getSuperValue()+'<br/>');
 	document.write('instance.getSubValue='+instance.getSubValue()+'<br/>');
@@ -151,4 +150,32 @@
 	document.write('instance.subValue='+instance.subValue+'<br/>');
 	instance.goSuper();
 	console.log(instance);
+
+	//2、创建既继承————构造函数继承
+	//声明父类
+	function fatherClass(name,gender){
+		this.name=name;
+		this.gender=gender;
+		this.interest=['看电视','钓鱼','拳击'];
+	}
+	fatherClass.prototype.showHome=function(){
+		document.write('<br/>'+this.name);
+	}
+	//声明子类
+	function childClass(name,gender){
+		//继承父类
+		fatherClass.call(this,name,gender);
+	}
+	//实例化两个子类
+	var child1=new childClass('姐姐','gril');
+	var child2=new childClass('弟娃','boy');
+	child1.interest.push('看漫画');
+	document.write('<br/>'+child1.name+'&nbsp;&nbsp'+child1.gender+'&nbsp;&nbsp'+child1.interest);
+	document.write('<br/>'+child2.name+'&nbsp;&nbsp'+child2.gender+'&nbsp;&nbsp'+child2.interest);
+	//child1.showHome();  //TypeError
+	var father1=new fatherClass('home1111');
+	father1.showHome();   //home1111
+
+	//3、组合继承（可继承父类原型方法，子类的实例中更改父类继承下来的引用类型属性，不会影响到其他实例）
+	
 </script>
