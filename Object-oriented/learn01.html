@@ -176,6 +176,32 @@
 	var father1=new fatherClass('home1111');
 	father1.showHome();   //home1111
 
-	//3、组合继承（可继承父类原型方法，子类的实例中更改父类继承下来的引用类型属性，不会影响到其他实例）
-	
+	//3、组合继承（可继承父类原型方法，子类的实例中更改父类继承下来的引用类型属性，不会影响到其他实例）(弊：父类实例化了两次，不够好)
+	function home(name){
+		this.name=name;
+		this.attribute=['温暖','温馨','安全'];
+	}
+	home.prototype.getHomeAttr=function(){
+		console.log(this.attribute);
+	};
+
+	function childHome(name,member){
+		home.call(this,name);
+		this.member=member;
+	}
+	childHome.prototype=new home();
+	childHome.prototype.getMember=function(){
+		console.log(this.member);
+	};
+
+	console.log(childHome.prototype);
+	var rabbitHome=new childHome('兔窝','兔爸爸，兔妈妈，兔宝宝');
+	rabbitHome.attribute.push('草地');
+	rabbitHome.getHomeAttr();
+	rabbitHome.getMember();
+	console.log(rabbitHome.name);
+
+	var tigerHome=new childHome('虎居','虎爸，虎妈，虎小子');
+	tigerHome.getHomeAttr();
+	tigerHome.getMember()
 </script>
