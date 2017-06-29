@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>$.extend()与$.fn.extend()的用法</title>
+</head>
+<body>
+	<h1>dblclick me,toggle h2</h1>
+	<h2>$.extend()与$.fn.extend()的用法</h2>
+</body>
+</html>
+<script src="lib/jquery/jquery-1.12.4.min.js"></script>
+<script src='lib/common.js'></script>
+<script>
+	var wrapper=$.extend({
+		sayHello:function(name){
+			console.log('hello,',name);
+		}
+	},wrapper); 
+	wrapper.goBack=function(name){
+		console.log(name+'forgive me,I\'m back.');
+	};
+	wrapper.sayHello('cp');
+	wrapper.goBack('cp');
+
+	//1、-------------------------------$.extend() begin-------------------------------
+	//解决typeof JSON在ie7及以下值为undefined的问题
+	$('body').append('<div>typeof JSON='+typeof JSON+'</div>');   //在ie7及其以下为undefined，已测
+	var printObj=typeof Json!='undefined'?JSON.stringify:function(obj){
+		var arr=[];
+		$.each(obj,function(key,val){
+			var next=key+':';
+			next+=$.isPlainObject(val)?printObj(val):val;
+			arr.push(next);
+		});
+		return '{'+arr.join(',')+'}';
+	}
+
+	var object1={
+		apple:0,
+		banana:{weight:50,price:100},
+		cherry:99
+	};
+	var object2={
+		apple:10,
+		durain:233
+	};
+	$.extend(object1,object2);  //将object2合并到object1	
+	$.extend({test:'hi,cp~'});   
+	console.log($.test);  //hi,cp~
+	$('body').append('<div>'+printObj(object1)+'</div>');
+	//1、-------------------------------$.extend() end-------------------------------
+
+	//2、-------------------------------$.fn.extend() begin-------------------------------
+	//jQuery.fn.extend(object)  An object to merge onto the jQuery prototype.
+	//$.fn=$.prototype
+	console.log($.fn==$.prototype);   //true
+	$.fn.extend({
+		clickSomeEle:function(){
+			$(this).click(function(){
+				alert('You! You! You click meT^T我是'+$(this)[0].tagName+'标签，我的值是：'+$(this).text());
+			});
+		}
+	});
+	$('div').clickSomeEle();
+	$('h2').clickSomeEle();
+	$('h1').dblClickSomeEle();
+	console.log($.fn.testcc);
+	//2、-------------------------------$.fn.extend() end-------------------------------
+</script>
