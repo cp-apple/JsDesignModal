@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js中call()与apply()的用法</title>
+</head>
+<body>
+	<h5>1、call 方法</h5>
+	<pre>
+	语法：call([thisObj[,arg1[, arg2[, [,.argN]]]]])
+
+　　参数 thisObj 可选项。将被用作当前对象的对象。 arg1, arg2, , argN 可选项。将被传递方法参数序列。
+
+　　说明 
+　　call 方法可以用来代替另一个对象调用一个方法。call 方法可将一个函数的对象上下文从初始的上下文改变为由 thisObj 指定的新对象。 
+　　如果没有提供 thisObj 参数，那么 Global 对象被用作thisObj。说明白一点其实就是更改对象的内部指针，即改变对象的this指向的内容。这在面向对象的js编程过程中有时是很有用的。
+	</pre>
+
+	<h5>2、apply方法 </h5>
+	<pre>
+	语法：apply([thisObj[,argArray]]) 
+　　定义：应用某一对象的一个方法，用另一个对象替换当前对象。 
+　　说明： 
+　　如果 argArray 不是一个有效的数组或者不是 arguments 对象，那么将导致一个 TypeError。 
+　　如果没有提供 argArray 和 thisObj 任何一个参数，那么 Global 对象将被用作 thisObj，并且无法被传递任何参数。	
+	</pre>
+	<h4>总结：二者作用相同，仅第二个参数传入方式不同。func.call(func1,var1,var2,var3)==func.apply(func1,[var1,var2,var3]),使用apply的一个好处是可以直接将当前函数的arguments对象作为apply第二个参数传入。</h4>
+	
+	<input id="myText" type="text" value='input text'>
+</body>
+</html>
+<script>
+	//一、call()运用实例
+	function Obj(){this.value='对象！'}
+	var value='global 变量';
+	function Fun1(){console.log(this.value);}
+
+	window.Fun1();  //global 变量
+	Fun1.call(window);  //global 变量
+	Fun1.call(document.getElementById('myText'));  //input text
+	Fun1.call(new Obj());   //对象！
+	window.Fun1();  //global 变量
+
+	var func=new function(){this.a='func';this.b='cs-b';}
+	var myfunc=function(x){
+		var a='myfunc';
+		console.log(this.a);
+		console.log(this.b);
+		console.log(x);
+	}
+	myfunc.call(func,'var');   //func,cs-b,var
+
+	//实例2：继承的演示
+	function base(){
+		this.member='dnnsun_Member';
+		this.method=function(){
+			console.log(this.member);
+		}
+	}
+	function extend(){
+		base.call(this);
+		console.log(this.member);
+		console.log(this.method);
+	}
+	extend();  
+
+	//实例3：实现继承
+	function Animal(name){
+		this.name=name;
+		this.showName=function(){
+			alert(this.name);
+		}
+	}
+	function Cat(name){
+		Animal.call(this,name);
+	}
+	var cat =new Cat('Black Cat');
+	cat.showName();   //Black Cat
+	//Animal.call(this) 的意思是使用 Animal对象代替this对象，那么 Cat中就有Animal的所有属性和方法了，Cat对象就能够直接调用Animal的方法以及属性。
+
+	//实例6：实现多重继承
+	var s1=function(name){
+		this.name=name;
+	}
+	var s2=function(sex){
+		this.sex=sex;
+	}
+	var s3=function(age){
+		this.age=age;
+	}
+	var Student=function(name,sex,age,score){
+		s1.call(this,name);
+		s2.call(this,sex);
+		s3.call(this,age);
+		this.score=score;
+		test_s.apply(this,arguments);
+	}
+	var test_s=function(name,sex,age,score){
+		console.log('apply()方法'+name+' '+sex+' '+age+' '+score);
+	};
+
+	Student.prototype.construction=Student;
+	var s=new Student('Tom','male','17','150');
+	console.log(s.name+','+s.sex+','+s.age+','+s.score);
+</script>
