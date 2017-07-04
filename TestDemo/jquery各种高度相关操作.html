@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jquery各种高度相关操作(横竖差不多，不解)</title>
+	<style>
+		*{
+			padding:0;margin:0;
+		}
+		.cs-height{
+			width: 400px;
+			height:auto;
+			padding: 30px 20px;
+			margin:50px 0 0 10px;
+			background-color: #ccddee;
+			border:5px solid #ddffee;
+		}
+		.line{display:block;width:100%;border:1px dashed #eee;margin:10px 0;}
+		#scrollBox{width:200px;height: 200px; overflow: auto}
+		#topBox{position: absolute;left:30%;top: 26%;border-width: 40px}
+	</style>
+</head>
+<body>
+	<h3>height(),outerHeight(),outerHeight(true)用法：</h3>
+	<div id="heightBox" class="cs-height">
+		<pre>
+height:auto;
+padding: 30px 20px;
+margin:50px 0 0 10px;
+border:5px solid #ddffee;
+		</pre>
+		<p class="line"></p>
+	</div>
+	
+	<div id="scrollBox" class="cs-height">		
+		<p>“何为美人？”</p>
+		<p class="line"></p>
+		<p>“纤手，凝眸，柔腰肢。”</p>
+		<p class="line"></p>
+		<p>“可否具体？”</p>
+		<p class="line"></p>
+		<p>“橘子香气。”</p>
+		<p class="line"></p>
+		<p>“可否再具体？”</p>
+		<p class="line"></p>
+		<p>“汝。”</p>
+		<p class="line"></p>
+		<p>以后你无论和谁在一起一定都会很幸福，因为你从不把幸福寄托在别人身上。</p>
+		<p class="line"></p>
+		<p>想变成一棵树，我开心时，开花；我不开心时，落叶。</p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+		<p class="line"></p>
+	</div>
+	
+	<p id="clkScroll" style='cursor: pointer'>点击实现滚动框滚动到 <b>100</b>px位置</p>
+	<span id="scrollTip" style="position: fixed;bottom:10px;right: 10px">滚动框的滚动距离为：<b style="color: #ff4c4c">0</b>px</span>
+
+	<div id="topBox" class="cs-height">
+		<h3>offsetTop,clientTop</h3>
+		<div></div>
+	</div>
+</body>
+</html>
+<script src="lib/jquery/jquery-1.12.4.min.js"></script>
+<script>
+	var $dom=$('#heightBox');
+	var toTop=$dom.offset().top;
+	$dom.append('<p>我距离页面顶部的距离为：'+toTop+'</p><span class="line"></span>');
+
+	var txt='我的高度为：'+$dom.height()+'<br />我的高度（包含border,padding）为：'+$dom.outerHeight()+'<br />我的高度（包含border,padding,margin）为：'+$dom.outerHeight(true);
+	$dom.append(txt);
+
+	var $scrollBox=$('#scrollBox');
+	$scrollBox.scroll(function(){
+		var domScollTop=$(this).scrollTop();
+		$('#scrollTip b').text(domScollTop);
+	});
+	
+	$('#clkScroll').on('click',function(e){
+		var scollTo=$(this).find('b').text();
+		$scrollBox.scrollTop(scollTo);
+		$(this).find('b').text(40*(Math.random()*10).toFixed(0));
+	});
+	
+	function some(){
+		var offsetLeft=$('#topBox')[0].offsetLeft;
+		var clientTop=$('#topBox')[0].clientTop;
+		$('#topBox').find('div').text('offsetLeft(返回对象相对于父级对象的布局或坐标的left值):'+offsetLeft+', clientTop(它居然是border的宽==。):'+clientTop);
+	}
+	some();
+	$(window).resize(function(){
+		some();
+	});
+	
+</script>
+
+
