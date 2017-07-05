@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>图片懒加载--jquery学习写插件思维</title>
+	<style>
+		p{text-align: center;}
+		.lazy-load-wrap img{display: block;margin: 10px auto;width:200px;height: 300px;border: solid #ccddee;border-width: 16px 10px;}
+	</style>
+</head>
+<body>
+	<div id="lazyImg">
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a1.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a2.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a3.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a4.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a5.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a6.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a7.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a8.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/a9.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/b1.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/b2.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/b3.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/b4.jpg" alt=""></div>
+		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/b5.jpg" alt=""></div>
+	</div>
+	<p>插件By JS中级交流群 成都-猎巫，吾在此基础上修改</p>
+
+</body>
+</html>
+<script src="lib/jquery/jquery-1.12.4.min.js"></script>
+<script>
+	$.fn.compassLazyLoad=function(options){
+		var opts=$.extend({},$.fn.compassLazyLoad.defaults,options);
+		var _HEIGHT=window.innerHeight,  //可视窗高度
+		_lazyLoadWrap=$(opts.lazyWrapName);
+
+		var methods={			
+			//为图片容器设置偏移文档的高距离
+			setOffsetTop:function(){
+				$.each(_lazyLoadWrap,function(i,item){
+					$(item).attr({
+						'top':$(item).offset().top-_HEIGHT,
+						'status':'wait'
+					});
+				});
+			},
+			isShow:function(){
+				var _scrollTop=$(window).scrollTop();
+				$.each(_lazyLoadWrap,function(m,mitem){
+					var _that=$(mitem);
+					if (_that.attr('status')=='done') {
+						return;
+					}
+					if (_that.attr('top')<=_scrollTop) {
+						_that.find('img['+opts.lazySrc+']').each(function(n,nitem){
+							setTimeout(function(){
+								$(nitem).attr('src',$(nitem).attr(opts.lazySrc));
+							},500);
+						});
+
+						_that.attr({'status':'done'});
+					}
+				});
+			},
+			scroll:function(){
+				$(window).scroll(function(){
+					methods.isShow();
+				});
+			},
+			init:function(){
+				methods.setOffsetTop();
+				methods.isShow();
+				methods.scroll();
+			},
+		}
+
+		methods.init();
+	}
+
+	//默认
+	$.fn.compassLazyLoad.defaults={
+		lazyWrapName:'.lazy-load-wrap',   //包裹懒加载图片的容器名称
+		lazySrc:'data-lazy-src'  //图片真实地址
+	};
+
+	//使用
+	$('.lazy-load-wrap').compassLazyLoad();
+
+	//获取某天是星期几
+	var weekday=['星期天','星期一','星期二','星期三','星期四','星期五','星期六'];
+	var nowDate=new Date();
+	$('body').before('<p>hello,girl~今天是：'+nowDate.getFullYear()+'年 '+(nowDate.getMonth()+1)+'月'+nowDate.getDate()+'日 '+weekday[nowDate.getDay()]+'</p>');
+</script>
