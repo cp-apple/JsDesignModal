@@ -186,6 +186,9 @@
 			setWidth:function(){
 				var imgCount=_sliderNavLi.length;  //图片数目
 				var contentBoxW=_moveW*imgCount;   //图片移动框的总宽度
+				// $(opts.sliderImgBox).find('ul.content').append($(opts.sliderImgBox).find('.content li').eq(0).clone());
+				// $(opts.sliderImgBox).find('ul.content').prepend($(opts.sliderImgBox).find('.content li').eq(imgCount-1).clone());
+
 				$(opts.sliderImgBox).find('.content').css('width',contentBoxW);
 				_sliderNavLi.eq(0).addClass('active').siblings('li').removeClass('active');			
 				methods.hasTitle();
@@ -198,18 +201,19 @@
 				}
 				if(moveIndex==_sliderNavLi.length-1){  //如果到了最后一个，则回第一个
 					moveIndex=-1;
-				}
+				}				
+
+				if (moveIndex==-2) {  //处理prev滚到第一张后的情况
+					moveIndex=3;
+				}	
 
 				if($(opts.sliderImgBox).find('.content').is(":animated")){  //如果在动画状态，则先停止动画状态
 					$(opts.sliderImgBox).find('.content').stop(false,true);
 				}
 
-				if (moveIndex==-2) {  //处理prev滚到第一张后的情况
-					moveIndex=3;
-				}		
 				moveIndex++;		
+				_sliderNavLi.eq(moveIndex).addClass('active').siblings('li').removeClass('active');							
 				$(opts.sliderImgBox).find('.content').animate({left:-_moveW*(moveIndex)},_speed);
-				_sliderNavLi.eq(moveIndex).addClass('active').siblings('li').removeClass('active');				
 				methods.hasTitle();
 				
 			},	
