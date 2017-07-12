@@ -25,12 +25,16 @@
 		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/b4.jpg" alt=""></div>
 		<div class="lazy-load-wrap"><img src="images/loading.gif" data-lazy-src="images/b5.jpg" alt=""></div>
 	</div>
+	<div class="container">
+		
+	</div>
 	<p>插件By JS中级交流群 成都-猎巫，吾在此基础上修改</p>
 
 </body>
 </html>
 <script src="lib/jquery/jquery-1.12.4.min.js"></script>
 <script>
+	//第一种方法 
 	$.fn.compassLazyLoad=function(options){
 		var opts=$.extend({},$.fn.compassLazyLoad.defaults,options);
 		var _HEIGHT=window.innerHeight,  //可视窗高度
@@ -92,4 +96,6 @@
 	var weekday=['星期天','星期一','星期二','星期三','星期四','星期五','星期六'];
 	var nowDate=new Date();
 	$('body').before('<p>hello,girl~今天是：'+nowDate.getFullYear()+'年 '+(nowDate.getMonth()+1)+'月'+nowDate.getDate()+'日 '+weekday[nowDate.getDay()]+'</p>');
+
+
 </script>

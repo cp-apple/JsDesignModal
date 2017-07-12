@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>试试轮播插件编写</title>
+	<style>
+		*{margin:0;padding:0;}
+		ul{overflow: hidden;}
+		ul li{list-style: none;float: left}
+		.sliderBox{
+			position: relative;
+			margin: 50px auto;
+			width: 500px;
+			height: 360px;
+		}
+		/*左右按钮*/
+		.moveBtn{
+			position: absolute;
+			top: 140px;
+			width: 50px;
+			height: 80px;
+			line-height: 80px;
+			text-align: center;
+			background-color: #aaccdd;
+			opacity: 0.3;
+			transition: all .3s;
+			cursor: pointer;
+		}
+		.moveBtn:hover{
+			opacity: 0.5;
+		}
+		.prevB{
+			left: -60px;
+			border-radius: 80% 0 0 80%;			
+		}
+		.nextB{
+			right:-60px;
+			border-radius: 0 80% 80% 0;
+
+		}
+
+		.sliderImgBox{
+			position: relative;
+			width: 100%;
+			height:100%;
+			overflow: hidden;			
+		}
+		ul.content{
+			position: absolute;
+			top: 0;
+			left:0;
+		}
+		.content li{
+			height: 360px;
+			width: 500px;
+			overflow: hidden;
+			cursor: pointer;
+		}
+		.content img{
+			width: 100%;
+			height: 100%;
+			vertical-align: middle;
+		}
+
+		.sliderNavBox{
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 50px;
+			border-top: 1px solid #ccddee;
+			background-color: rgba(255,255,255,.5);
+		}
+		ul.nav {
+			float: right;
+			margin-top: 10px;
+		}
+		.nav li{			
+			margin-right: 5px;
+			padding: 5px 10px;
+			background-color: #444;
+			color: #fff;
+			cursor: pointer;
+		}
+		.nav li:hover,.nav li.active{
+			background-color: #aaccee
+		}
+		p.tag{
+			text-align:center;
+		}
+	</style>
+</head>
+<body>
+	<div class="sliderBox">
+		<div class="sliderImgBox">
+			<ul class="content">
+				<li><img src="images/a1.jpg" alt=""></li>
+				<li><img src="images/a2.jpg" alt=""></li>
+				<li><img src="images/a3.jpg" alt=""></li>
+				<li><img src="images/a4.jpg" alt=""></li>
+				<li><img src="images/a5.jpg" alt=""></li>
+			</ul>
+		</div>
+		
+		<div class="sliderNavBox">
+			<ul class="nav">
+				<li>1</li>
+				<li>2</li>
+				<li>3</li>
+				<li>4</li>
+				<li>5</li>
+			</ul>	
+		</div>
+
+		<!-- 左右按钮 -->
+		<div class="moveBtn nextB">next</div>
+		<div class="moveBtn prevB">prev</div>
+	</div>
+
+</body>
+</html>
+<script src="lib/jquery/jquery-1.12.4.min.js"></script>
+<script>
+	//yyyy-mm-dd 格式
+	var dt = new Date();
+	var date = [
+			[dt.getFullYear(), dt.getMonth() + 1, dt.getDate()].join('-'),
+			[dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
+		].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零 (略微改动)
+
+	$('body').append('<p class="tag">人生第一个渣渣插件==+'+date+'</p>'); // => 2017-07-11 15:01:01
+	
+	$.fn.slider=function(options){
+		var opts=$.extend({},$.fn.slider.defaults,options);
+		var _moveW=$(opts.sliderImgBox).width();   //移动宽度
+		var _sliderNavLi=$(opts.sliderNavBox).find('ul li');  
+		var _speed=opts.speed;
+		var moveInterval;  //定时器
+		var _sliderImgBox=$(opts.sliderImgBox);  
+
+		//计数小点点击
+		_sliderNavLi.on('click',function(){
+			$(this).addClass('active').siblings('li').removeClass('active');	
+			var changeMoveNum=$(this).index();		
+			methods.play(changeMoveNum);
+			if (opts.auto) {
+				clearInterval(moveInterval);
+				moveInterval=setInterval(function(){		
+					methods.play();
+				},opts.timer);	
+			}
+			
+		});
+		//鼠标经过停止滚动，离开继续滚动
+		_sliderImgBox.hover(function(){
+			clearInterval(moveInterval);
+		},function(){
+			methods.autoPlay();				
+		});
+		
+		//控制左右滚动
+		$('.nextB,.prevB').on('click',function(){
+			var activeLiIndex=$(opts.sliderNavBox).find('ul li.active').index();	
+			var changeMoveNum=activeLiIndex+1;		
+			if ($(this).hasClass('prevB')) { //prev
+				methods.play(changeMoveNum-2);				
+			}else{  //next
+				methods.play(changeMoveNum);				
+			}
+			methods.autoPlay();	
+		});
+		var methods={
+			//轮播框基本设置
+			setWidth:function(){
+				var imgCount=_sliderNavLi.length;  //图片数目
+				var contentBoxW=_moveW*imgCount;   //图片移动框的总宽度
+				$(opts.sliderImgBox).find('.content').css('width',contentBoxW);
+				_sliderNavLi.eq(0).addClass('active').siblings('li').removeClass('active');
+			},
+			//滚到方法
+			play:function(changeMoveNum){
+				var moveIndex=$(opts.sliderNavBox).find('ul li.active').index();   //移动距离下标	
+				if (changeMoveNum!=undefined) {
+					moveIndex=changeMoveNum-1;
+				}
+				if(moveIndex==_sliderNavLi.length-1){  //如果到了最后一个，则回第一个
+					moveIndex=-1;
+				}
+
+				if($(opts.sliderImgBox).find('.content').is(":animated")){  //如果在动画状态，则先停止动画状态
+					$(opts.sliderImgBox).find('.content').stop(false,true);
+				}
+
+				if (moveIndex==-2) {  //处理prev滚到第一张后的情况
+					moveIndex=3;
+				}		
+				moveIndex++;		
+				$(opts.sliderImgBox).find('.content').animate({left:-_moveW*(moveIndex)},_speed);
+				_sliderNavLi.eq(moveIndex).addClass('active').siblings('li').removeClass('active');	
+				
+			},	
+			//自动播放
+			autoPlay:function(){
+				if (opts.auto) {
+					clearInterval(moveInterval);
+					moveInterval=setInterval(function(){		
+						methods.play();
+					},opts.timer);				
+					
+				}
+			},			
+			start:function(){
+				methods.setWidth();			
+				methods.autoPlay();			
+			}
+		};
+
+		methods.start();
+	}
+	
+	//默认设置
+	$.fn.slider.defaults={
+		auto:true,  //自动播放  
+		sliderImgBox:'.sliderImgBox',  //图片框
+		sliderNavBox:'.sliderNavBox', 
+		speed:800,   //图片移动速度 
+		timer:2000,  //移动间隔
+	}
+
+	$('#sliderBox').slider({
+		//auto:false
+	});
+</script>
