@@ -5,6 +5,8 @@
 	<title>试试轮播插件编写</title>
 	<style>
 		*{margin:0;padding:0;}
+		a{outline: none;}
+		img{border:none;}
 		ul{overflow: hidden;}
 		ul li{list-style: none;float: left}
 		.sliderBox{
@@ -87,17 +89,31 @@
 		p.tag{
 			text-align:center;
 		}
+		p.title{
+			line-height: 50px;
+			text-indent: 20px;
+			width: 300px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		p.title a{
+			color: #333
+		}
+		p.title a:hover{
+			color: #ff4a4a
+		}
 	</style>
 </head>
 <body>
 	<div class="sliderBox">
 		<div class="sliderImgBox">
 			<ul class="content">
-				<li><img src="images/a1.jpg" alt=""></li>
-				<li><img src="images/a2.jpg" alt=""></li>
-				<li><img src="images/a3.jpg" alt=""></li>
-				<li><img src="images/a4.jpg" alt=""></li>
-				<li><img src="images/a5.jpg" alt=""></li>
+				<li data-title='向日葵huger~'><a href="#"><img src="images/a1.jpg" alt=""></a></li>
+				<li data-title='风一样的少年'><a href="#"><img src="images/a2.jpg" alt=""></a></li>
+				<li data-title='烽火狼烟下的固守，等一个人抗一座城，君归我归，不忍看辰宿扩张'><a href="#"><img src="images/a3.jpg" alt=""></a></li>
+				<li data-title='相忘于江湖的小小酥'><a href="#"><img src="images/a4.jpg" alt=""></a></li>
+				<li data-title='呆萌学问派冷大叔'><a href="#"><img src="images/a5.jpg" alt=""></a></li>
 			</ul>
 		</div>
 		
@@ -109,6 +125,7 @@
 				<li>4</li>
 				<li>5</li>
 			</ul>	
+			<p class="title"></p>
 		</div>
 
 		<!-- 左右按钮 -->
@@ -127,7 +144,7 @@
 			[dt.getHours(), dt.getMinutes(), dt.getSeconds()].join(':')
 		].join(' ').replace(/(?=\b\d\b)/g, '0'); // 正则补零 (略微改动)
 
-	$('body').append('<p class="tag">人生第一个渣渣插件==+'+date+'</p>'); // => 2017-07-11 15:01:01
+	$('body').append('<p class="tag">人生第一个渣渣插件==+'+date+' 兼容ie8+，jquery真是强大。</p>'); // => 2017-07-11 15:01:01
 	
 	$.fn.slider=function(options){
 		var opts=$.extend({},$.fn.slider.defaults,options);
@@ -136,23 +153,19 @@
 		var _speed=opts.speed;
 		var moveInterval;  //定时器
 		var _sliderImgBox=$(opts.sliderImgBox);  
+		var _isTitle=opts.isTitle;  //是否显示标题
 
 		//计数小点点击
 		_sliderNavLi.on('click',function(){
 			$(this).addClass('active').siblings('li').removeClass('active');	
 			var changeMoveNum=$(this).index();		
 			methods.play(changeMoveNum);
-			if (opts.auto) {
-				clearInterval(moveInterval);
-				moveInterval=setInterval(function(){		
-					methods.play();
-				},opts.timer);	
-			}
-			
+			methods.autoPlay();	
 		});
 		//鼠标经过停止滚动，离开继续滚动
 		_sliderImgBox.hover(function(){
 			clearInterval(moveInterval);
+			moveInterval=null;
 		},function(){
 			methods.autoPlay();				
 		});
@@ -174,9 +187,10 @@
 				var imgCount=_sliderNavLi.length;  //图片数目
 				var contentBoxW=_moveW*imgCount;   //图片移动框的总宽度
 				$(opts.sliderImgBox).find('.content').css('width',contentBoxW);
-				_sliderNavLi.eq(0).addClass('active').siblings('li').removeClass('active');
+				_sliderNavLi.eq(0).addClass('active').siblings('li').removeClass('active');			
+				methods.hasTitle();
 			},
-			//滚到方法
+			//滚动方法
 			play:function(changeMoveNum){
 				var moveIndex=$(opts.sliderNavBox).find('ul li.active').index();   //移动距离下标	
 				if (changeMoveNum!=undefined) {
@@ -195,19 +209,29 @@
 				}		
 				moveIndex++;		
 				$(opts.sliderImgBox).find('.content').animate({left:-_moveW*(moveIndex)},_speed);
-				_sliderNavLi.eq(moveIndex).addClass('active').siblings('li').removeClass('active');	
+				_sliderNavLi.eq(moveIndex).addClass('active').siblings('li').removeClass('active');				
+				methods.hasTitle();
 				
 			},	
 			//自动播放
 			autoPlay:function(){
 				if (opts.auto) {
 					clearInterval(moveInterval);
+					moveInterval=null;
 					moveInterval=setInterval(function(){		
 						methods.play();
 					},opts.timer);				
 					
 				}
-			},			
+			},	
+			//含有标题	
+			hasTitle:function(){
+				if (_isTitle) {
+					var titleId=$(opts.sliderNavBox).find('ul li.active').index();
+					var slideTitle=$(opts.sliderImgBox).find('ul li').eq(titleId).attr('data-title')
+					$(opts.sliderNavBox).find('p.title').empty().append('<a href="www.未来会放一个链接.com">'+slideTitle+'</a>').attr('title',slideTitle);
+				}
+			},	
 			start:function(){
 				methods.setWidth();			
 				methods.autoPlay();			
@@ -224,9 +248,11 @@
 		sliderNavBox:'.sliderNavBox', 
 		speed:800,   //图片移动速度 
 		timer:2000,  //移动间隔
+		isTitle:true,  //是否显示标题
 	}
 
 	$('#sliderBox').slider({
-		//auto:false
+		//auto:false,
+		//isTitle:false
 	});
 </script>
