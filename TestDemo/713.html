@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>乐哈哈</title>
+	<style>
+		*{margin:0;padding: 0}
+		body{padding: 0 20px 20px;}
+		h4{
+			margin: 30px 10px 10px 10px;
+			color: #aaccee;
+		}
+		p{line-height: 2;}
+	</style>
+</head>
+<body>
+	<h4>delete 用于删除对象的某个属性</h4>
+	<p>1、var 定义的变量不可被删除，window下的全局变量可被删除</p>
+	<p>2、返回值对于所有情况都是true，除非属性是一个自己的不可配置属性，在这种情况下，非严格模式返回 false。在严格模式下，如果是对象自身的不可配置属性，会抛出Global_objects/SyntaxError。</p>
+	<h4>hasOwnProperty()函数</h4>
+	<p>hasOwnProperty()函数用于指示一个对象自身(不包括原型链)是否具有指定名称的属性。如果有，返回true，否则返回false。<br/>
+	该方法属于Object对象，由于所有的对象都"继承"了Object的对象实例，因此几乎所有的实例对象都可以使用该方法。</p>
+</body>
+</html>
+<script>
+	function conS(val){
+		return console.log(val);
+	}
+	//'use strict';  //进入严格模式标识
+	var a='aa';
+	delete a;
+	console.log(a);  //aa
+
+	b='bb';
+	delete b;
+	//console.log(b);  // b is not defined
+
+	var c={c1:'c1c1',c2:'c2c2'};
+	delete c.c1;
+	//console.log(c.c1);  //undefined
+
+	var d=function(){
+		console.log('d is a dog.');
+	};
+	d.prototype.dProt='dProt';
+	var d1=new d();
+	console.log(d1.dProt);  //dProt
+	delete d1.dProt;
+	console.log(d1.dProt);  //dProt
+	delete d.prototype.dProt;
+	//console.log(d.prototype.dProt);  //undefined
+	//console.log(d1.dProt);  //undefined
+
+	var global=(function(){
+		return this;
+	})();
+	global.ace='ace';
+
+	//var 散布问题，hoisting(悬置，置顶解析，预解析)
+	global.myname='global';  //全局变量
+	function func(){
+		console.log(myname);  //undefined
+		var myname='local';
+		/*变量声明当被悬置到函数的顶部，上两句等同于
+		*var myname;
+		*alert(myname);  //undefined
+		*myname='local';
+		*/
+		console.log(myname);  //local
+	}
+	func();
+	var i=0,len=5;
+	while(len--){
+		conS('i='+i++);
+	}
+
+	/*hasOwnProperty()函数
+	*hasOwnProperty()函数用于指示一个对象自身(不包括原型链)是否具有指定名称的属性。如果有，返回true，否则返回false。
+	*该方法属于Object对象，由于所有的对象都"继承"了Object的对象实例，因此几乎所有的实例对象都可以使用该方法。
+	*/
+	var lover={
+		hands:2,
+		legs:2,
+		heads:1,
+		features:'soft adorable'
+	};
+	if (typeof Object.prototype.clone=='undefined') {
+		Object.prototype.clone=function(){
+			conS('Object prototype clone()方法');
+		};
+	}
+	lover.clone();
+	//包含了原型链上的方法clone()
+	for(var j in lover){
+		conS(j+":"+lover[j]);
+	}
+	conS('=====================\n\r');
+	//for in 循环比较适合用来循环对象{}
+	for(var m in lover){
+		if (lover.hasOwnProperty(m)) {  //过滤掉原型链上的属性
+			conS(m+':'+lover[m]);
+		}
+	}
+	conS('=====================\n\r');
+	
+</script>

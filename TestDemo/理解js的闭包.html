@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>理解js的闭包</title>
+	<style>
+		*{margin:0;padding: 0}
+		body{padding: 0 20px 20px;}
+		h4{
+			margin: 30px 10px 10px 10px;
+			color: #aaccee;
+		}
+		p{line-height: 2;}
+	</style>
+</head>
+<body>
+	<h4>闭包的应用</h4>
+</body>
+</html>
+<script>
+	var	global=(function(){
+		return this;
+	})();
+	function conS(val){
+		return console.log(val);
+	}
+	/*
+	*应用闭包的两种情况
+	*一、函数作为返回值
+	*二、函数作为参数被传递
+	*/
+
+	//一、函数作为返回值
+	function fn(){
+		var max=10;
+		return function bar(x){
+			if(x>max){
+				conS('x = '+x);
+			}else{
+				conS('max = '+max);
+			}
+		}
+	}
+	var f1=fn();
+	f1(15);
+	f1(1);
+
+	//二、函数作为参数被传递
+	var min=10,
+		fnr=function(y){
+			if (y<min) {
+				conS('y = '+y)
+			}else{
+				conS('min = '+min);
+			}
+		};
+	var testParam=1;
+	(function(f,m){
+		var min=5;  //I know 不取它
+		//conS(f);
+		f(m);		
+		f(119);
+		f(2);
+	})(fnr,testParam);
+	//如上代码中，fnr函数作为一个参数被传递进入另一个函数，赋值给f参数。
+
+	var a=2;
+	var obj={
+		a:20,
+		bar:function(f){
+			var a=15;
+			conS(this.a);  //20
+			console.log(this);  //obj
+			f();
+		}
+	};
+	conS(obj.a);  //20
+	obj.bar(function(){
+		console.log(this);  //window
+		conS(a);  //a的值为2
+	});
+</script>
