@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js设计模式之单例模式</title>
+	<style>
+		*{margin:0;padding: 0}
+		body{padding: 0 20px 20px;}
+		h4{
+			margin: 30px 10px 10px 10px;
+			color: #aaccee;
+		}
+		p{line-height: 2;}
+	</style>
+</head>
+<body>
+	<h4>单例模式</h4>
+	<p>在传统开发工程师眼里，单例就是保证一个类只有一个实例，实现的方法一般是先判断实例存在与否，如果存在直接返回，如果不存在就创建了再返回，这就确保了一个类只有一个实例对象。在JavaScript里，单例作为一个命名空间提供者，从全局命名空间里提供一个唯一的访问点来访问该对象。</p>
+</body>
+</html>
+<script>
+	var mySingleton=function(){
+		//私有变量及方法
+		var privateVariable='something private';
+		function showPrivate(){
+			console.log(privateVariable);
+		}
+
+		//公有变量和方法（可以访问私有变量和方法）
+		return {
+			publicMethod:function(){
+				showPrivate();
+			},
+			publicVariable:'the public can see this.'
+		};
+	};
+
+	var single=mySingleton();
+	single.publicMethod();  //something private
+	console.log(single.publicVariable);  //the public can see this.
+</script>
