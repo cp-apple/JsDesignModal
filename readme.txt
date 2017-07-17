@@ -13,3 +13,4 @@
 2017-07-12 tag：试写jquery插件之轮播效果
 2017-07-14 tag：理解js的闭包
 2017-07-15 tag：js设计模式之单例模式
+2017-07-17 tag：js里prototype和constructor的理解
