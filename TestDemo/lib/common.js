@@ -1,4 +1,3 @@
-
 var cp_wrapper={
 	demo1_1:function(){
 		console.log($(this));

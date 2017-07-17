@@ -6,24 +6,28 @@
 	<style>
 		*{margin:0;padding: 0}
 		body{padding: 0 20px 20px;}
-		h4{
-			margin: 30px 10px 10px 10px;
-			color: #aaccee;
-		}
+		h4{margin: 30px 10px 10px 10px;color: #aaccee;}
 		p{line-height: 2;}
+		p.special{color: #ff4c4c}
 	</style>
 </head>
 <body>
 	<h4>单例模式</h4>
 	<p>在传统开发工程师眼里，单例就是保证一个类只有一个实例，实现的方法一般是先判断实例存在与否，如果存在直接返回，如果不存在就创建了再返回，这就确保了一个类只有一个实例对象。在JavaScript里，单例作为一个命名空间提供者，从全局命名空间里提供一个唯一的访问点来访问该对象。</p>
+	<p class="special">一、用一个容器变量来缓存实例</p>
+	<h4>感谢汤姆大叔的分享 <a href="http://www.cnblogs.com/TomXu/archive/2012/02/20/2352817.html">链接</a></h4>
 </body>
 </html>
 <script>
+	function conS(val){
+		console.log(val);
+	}
+
 	var mySingleton=function(){
 		//私有变量及方法
 		var privateVariable='something private';
 		function showPrivate(){
-			console.log(privateVariable);
+			conS(privateVariable);
 		}
 
 		//公有变量和方法（可以访问私有变量和方法）
@@ -37,5 +41,170 @@
 
 	var single=mySingleton();
 	single.publicMethod();  //something private
-	console.log(single.publicVariable);  //the public can see this.
+	conS(single.publicVariable);  //the public can see this.
+
+	//如果我们想做到只有在使用的时候才初始化，那该如何做呢？为了节约资源的目的，我们可以另外一个构造函数里来初始化这些代码，如下：
+	var SingleTon=(function(){
+		var instantiated;
+		function init(){
+			//这里定义单例代码
+			return {
+				publicMethod:function(){
+					conS('hello world.');
+				},
+				publicProperty:'test'
+			};
+		}
+
+		return {
+			getInstance:function(){
+				conS(instantiated);  //undefined
+				if (!instantiated) {
+					instantiated=init();
+				}
+				return instantiated;
+			}			
+		};
+
+	})();
+	//调用公有的方法来获取实例
+	SingleTon.getInstance().publicMethod();  //hello world.
+
+	//知道了单例如何实现了，但单例用在什么样的场景比较好呢？其实单例一般是用在系统间各种模式的通信协调上，下面的代码是一个单例的最佳实践：
+	var SingletonTester=(function(){
+		//参数：传递给单例的一个参数集合
+		function Singleton(args){
+			conS(this);
+			//设置args变量为接收的参数或者为空（如果未提供的话）
+			var args=args||{};
+			this.name='SingletonTester';
+			this.pointX=args.pointX||6;
+			this.pointY=args.pointY||10;
+		}
+
+		//实例容器
+		var instance;
+
+		var _static={
+
+			//获取实例的方法，返回Singleton的实例
+			getInstance:function(args){
+				if (!instance) {
+					instance=new Singleton(args);
+				}
+				return instance;
+			},
+			name:'cc',
+		};
+		conS('_static.name = '+_static.name);  //cc
+		return _static;
+	})();
+
+	conS(SingletonTester.name);  //cc
+	var singletonTest=SingletonTester.getInstance({pointY:30});	
+	conS('singletonTest.name = '+singletonTest.name);  //SingletonTester
+	conS('singletonTest.pointX = '+singletonTest.pointX);  //6
+	conS('singletonTest.pointY = '+singletonTest.pointY);  //30
+
+	//单例模式的其他实现方式
+	//方法1：
+	function Universe(){
+		conS(Universe.instance);   //第一次undefined
+		//判断是否存在实例
+		if (typeof Universe.instance==='object') {
+			return Universe.instance;
+		}
+
+		//其他内容
+		this.start_time=0;
+		this.bang='Big';
+
+		//缓存
+		Universe.instance=this;
+
+		//隐式返回this
+	}
+	//测试
+	var uni1=new Universe();
+	var uni2=new Universe();
+	conS(uni1===uni2);  //true
+
+	//方法2：
+	function home(){
+		var instance=this;  //缓存的实例
+		//其他内容
+		this.count=4;
+		this.addr='earth';
+
+		conS(222);
+		//重写构造函数
+		home=function(){
+			conS(1111);  //cp-tag:第一次实例化不进来，why?  answer:第一次到这home()函数被重写，后来的第二三次实例化，调用的都是被重写后的home()函数
+			return instance;
+		};
+	}
+	//测试
+	var home1=new home();
+	var home2=new home();
+	var home3=new home();
+	home1.count=5;
+	conS(home1===home2);  //true
+	conS(home2.count);  //5
+
+	//方法3：（学习了prototype and constructor后再来完善）
+	function fruit(){
+		var instance;  //缓存实例
+
+		//重新构造函数
+		fruit=function fruit(){
+			return instance;
+		};
+		
+		//后期处理原型属性
+		fruit.prototype=this;
+
+		//实例
+		instance=new fruit();
+
+		//重设构造函数指针
+		instance.constructor=fruit;
+
+		//其他功能
+		instance.name='some fruit';
+		instance.features='can eat.';
+		return instance;
+	}
+	//测试
+	var banana=new fruit();
+	fruit.prototype.yourName='fruit';
+	var orange=new fruit();
+	conS('-----------------third methods begin-----------------');
+	conS(banana===orange);  //true
+	conS(banana.name);  //some fruit
+	conS(banana.features);  //can eat.
+	conS(banana.yourName);  //fruit
+	conS(orange.yourName);  //fruit
+	conS('-----------------third methods end-----------------');
+
+	//方法4：
+	var Person;
+	(function(){
+		var instance;
+		Person=function(){
+			if(instance){
+				return instance;
+			}
+
+			instance=this;
+			this.like='eat';
+			this.dislike='other';
+		};		
+
+	}());
+
+	var people1=new Person();
+	var people2=new Person();
+	conS(people1===people2);  //true
+	people1.like='apple';
+	conS(people2.like);  //apple
 </script>
