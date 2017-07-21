@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<title>js里prototype和constructor的理解</title>
 	<style>
 		*{margin:0;padding: 0}
@@ -39,6 +40,14 @@
 		console.log(f1.cc===foo.prototype.cc);  //true
 		console.log(f1===foo.prototype);  //false
 	</pre>
+
+	<h4>汤姆大叔：强大的原型和原型链</h4>
+	<h4>原型链上的属性查找</h4>
+	<p>属性在查找的时候是先查找自身的属性，如果没有再查找原型，再没有，再往上走，一直查到Object的原型上</p>
+	<h4>hasOwnProperty函数</h4>
+	<p>hasOwnProperty是Object.prototype的一个方法，它可是个好东西，他能判断一个对象是否包含自定义属性而不是原型链上的属性，
+	因为hasOwnProperty 是 JavaScript 中唯一一个处理属性但是不查找原型链的函数。</p>
+	<p>JavaScript 不会保护 hasOwnProperty 被非法占用，因此如果一个对象碰巧存在这个属性，就需要使用外部的 hasOwnProperty 函数来获取正确的结果。</p>
 </body>
 </html>
 <script>
@@ -83,4 +92,104 @@
 
 	//__proto__
 	clg(tigerFamily.__proto__===family.prototype);  //true
+
+	// 汤姆大叔：强大的原型和原型链 begin--------------------------
+	//原型
+	var baseCalculator=function(){
+		//小数位数
+		this.decimalDigits=2;
+	};
+	baseCalculator.prototype=function(){
+		var add=function(x,y){
+			return x+y;
+		},
+		substract=function(x,y){
+			return x-y
+		};
+
+		return {
+			add:add,
+			substract:substract
+		}
+	}();
+	var calculator=function(){
+		//税收数字
+		this.tax=5;
+	}
+	calculator.prototype=new baseCalculator();
+
+	var calc=new calculator();
+	console.log(calc.decimalDigits);  //2
+	console.log(calc.tax);  //5
+	console.log(calc.add(3,5));  //8
+	console.log(calc.substract(3,5));  //-2
+
+	//原型链
+	var Foo=function(){
+		this.value=111;
+	}
+	Foo.prototype={
+		method:function(){
+			console.log(this.value);
+		}
+	};
+	function Bar(){};
+	//Bar继承Foo
+	Bar.prototype=new Foo();   
+	Bar.prototype.foo='Hello World.';
+
+	//修正Bar.prototype.constructor为Bar本身
+	Bar.prototype.constructor=Bar;
+
+	var test=new Bar();  //创建Bar的一个新实例
+	console.log(test.foo);  //Hello World.
+
+	//属性查找
+	//属性在查找的时候是先查找自身的属性，如果没有再查找原型，再没有，再往上走，一直查到Object的原型上
+	function calcT(){
+		this.add=function(x,y){
+			return x+y;
+		}
+	}
+	calcT.prototype.add=function(x,y){
+		return x+y+10;
+	}
+	Object.prototype.subtract=function(x,y){
+		return x-y;
+	}
+
+	var calcTest=new calcT();
+	console.log(calcTest.add(1,2));  //3
+	console.log(calcTest.subtract(1,2));  //-1
+
+	//hasOwnProperty函数
+	//hasOwnProperty是Object.prototype的一个方法，它可是个好东西，他能判断一个对象是否包含自定义属性而不是原型链上的属性，
+	//因为hasOwnProperty 是 JavaScript 中唯一一个处理属性但是不查找原型链的函数。	
+	Object.prototype.bar=1;
+	var foo={goo:undefined};
+	console.log(foo.bar);
+	console.log(foo.hasOwnProperty('bar'));   //false
+	console.log(foo.hasOwnProperty('goo'));   //true
+
+	//JavaScript 不会保护 hasOwnProperty 被非法占用，因此如果一个对象碰巧存在这个属性，就需要使用外部的 hasOwnProperty 函数来获取正确的结果。
+	var model={
+		hasOwnProperty:function(){
+			return false;
+		},
+		aa:'aa'
+	};
+	console.log('--------------hasOwnProperty begin-----------');
+	console.log(model.hasOwnProperty('aa'));   //false
+	console.log({}.hasOwnProperty.call(model,'aa'));  //true
+	for(var i in model){
+		console.log(i+':'+model[i]);   //hasOwnProperty、aa、bar、subtract
+	}
+	for(var j in model){
+		if ({}.hasOwnProperty.call(model,j)) {
+			console.log(j);   //haOwnProperty、aa
+		}
+	}
+	console.log('--------------hasOwnProperty end-----------');
+
+	// 汤姆大叔：强大的原型和原型链 end--------------------------
 </script>

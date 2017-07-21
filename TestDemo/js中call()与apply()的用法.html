@@ -13,7 +13,7 @@
 
 　　说明 
 　　call 方法可以用来代替另一个对象调用一个方法。call 方法可将一个函数的对象上下文从初始的上下文改变为由 thisObj 指定的新对象。 
-　　如果没有提供 thisObj 参数，那么 Global 对象被用作thisObj。说明白一点其实就是更改对象的内部指针，即改变对象的this指向的内容。这在面向对象的js编程过程中有时是很有用的。
+　　如果没有提供 thisObj 参数，那么 Global 对象被用作thisObj。说明白一点其实就是<font style="font-size:16px;color:#aaccee;font-weight: bold;">更改对象的内部指针</font>，即改变对象的this指向的内容。这在面向对象的js编程过程中有时是很有用的。
 	</pre>
 
 	<h5>2、apply方法 </h5>
@@ -76,7 +76,7 @@
 	}
 	var cat =new Cat('Black Cat');
 	cat.showName();   //Black Cat
-	//Animal.call(this) 的意思是使用 Animal对象代替this对象，那么 Cat中就有Animal的所有属性和方法了，Cat对象就能够直接调用Animal的方法以及属性。
+	//Animal.call(this) 的意思是改变Animal对象的this指针为cat对象的this指针，那么 Cat中就有Animal的所有属性和方法了，Cat对象就能够直接调用Animal的方法以及属性。
 
 	//实例6：实现多重继承
 	var s1=function(name){

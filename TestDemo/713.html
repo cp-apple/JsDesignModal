@@ -20,6 +20,13 @@
 	<h4>hasOwnProperty()函数</h4>
 	<p>hasOwnProperty()函数用于指示一个对象自身(不包括原型链)是否具有指定名称的属性。如果有，返回true，否则返回false。<br/>
 	该方法属于Object对象，由于所有的对象都"继承"了Object的对象实例，因此几乎所有的实例对象都可以使用该方法。</p>
+	<h4>命名上建议点：</h4>
+	<p>一、对于构造函数，可以使用大驼峰式命名法(upper camel case)，如MyConstructor()。对于函数和方法名称，你可以使用小驼峰式命名法(lower camel case)，像是myFunction(), calculateArea()和getFirstName()。</p>
+	<p>二、JavaScript中没有定义常量的方法（尽管有些内置的像Number，MAX_VALUE），所以开发者都采用全部单词大写的规范来命名这个程序生命周期中都不会改变的变量。<br/>
+	还有另外一个完全大写的惯例：全局变量名字全部大写。全部大写命名全局变量可以加强减小全局变量数量的实践，同时让它们易于区分。
+	</p>
+	<p>三、使用一个下划线前缀来表示一个私有属性或方法。</p>
+
 </body>
 </html>
 <script>
