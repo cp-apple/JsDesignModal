@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js设计模式之构造函数模式</title>
+	<style>
+		*{margin:0;padding: 0}
+		body{padding: 0 20px 20px;}
+		h4{margin: 30px 10px 10px 10px;color: #aaccee;}
+		p{line-height: 2;}
+		p.special{color: #ff4c4c}
+	</style>
+</head>
+<body>
+	<h4>js设计模式之构造函数模式</h4>
+	<p>构造函数最好首字母大写来区分其他函数，并且强制使用new构造</p>
+</body>
+</html>
+
+<script>
+	function conS(val){
+		console.log(val);
+	}
+
+	function PersonInfo(name,age,gender){
+		if (!(this instanceof PersonInfo)) {
+			return new PersonInfo(name,age,gender);
+		}
+		this.name=name;
+		this.age=age;
+		this.gender=gender;
+	}
+	PersonInfo.prototype.getInfo=function(){
+		console.log('姓名：'+this.name+' 年龄：'+this.age+' 性别：'+this.gender);
+	}
+
+	var person1=new PersonInfo('后羿',100000000000000000000,'boy');
+	person1.getInfo();  //姓名：后羿 年龄：100000000000000000000 性别：boy
+	var person2=new PersonInfo('女娲',9999,'girl');
+	person2.getInfo();  //姓名：女娲 年龄：9999 性别：girl
+</script>

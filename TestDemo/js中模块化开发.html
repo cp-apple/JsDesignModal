@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js中模块化开发</title>
+</head>
+<body>
+	<div id="container"></div>
+	<div id="jsContainer"></div>
+</body>
+</html>
+
+<script type='text/template' id="nav-template">
+	<div>
+		<h4>我来自于&lt;script type="text/template" id="nav-template"&gt;&lt;/script&gt;</h4>
+		<ul>
+			<li>第一个li标签</li>
+			<li>第二个li标签</li>
+			<li>第三个li标签</li>
+		</ul>
+	</div>
+</script>
+<script type="text/template" id="peoInfo-template">
+	<h4>个人基本信息</h4>
+	<p>姓名：{name}</p>
+	<p>年龄：{age}</p>
+	<p>电话：{phone}</p>
+	<p>QQ：{QQ}</p>
+</script>
+<script type="text/javascript">
+	var container=document.getElementById('container'),
+		navTemplate=document.getElementById('nav-template').innerHTML;
+	container.innerHTML=navTemplate;
+
+	/*模块化开发大致原理：
+	*1. 取模块的内容
+	*2. 获取模板中参数值
+	*3. 设置一个模板对象值
+	*4. 替换模板参数中与模板对象相同的值
+	*/
+	function getTemplate(tplID){
+		var _this=this;   //保存自身指针
+		var assignArr=[];   //定义一个哈希数组，存放assign的k,v
+		var config={   //配置项
+			limitL:"{",
+			limitR:"}",
+			voidModify:'',   //如果模板元素无值，则显示为空
+		};
+
+		var limitArr={    //私有变量，存储转义定界符
+			'<':'&lt;',
+			'>':'&gt;',
+		};
+
+		//私有方法，转义字符
+		var encodeLimter=function(str){
+			for(var tmp in limitArr){
+				if(str.search(tmp)>=0){
+					str=str.replace(tmp,limitArr[tmp]);
+				}
+			}
+
+			return str;
+		};
+
+		//公有方法，修改定界符和空参数
+		this.action={
+			setLimitL:function(str){
+				config.limitL=encodeLimter(str);
+				return _this;
+			},
+			setLimitR:function(str){
+				config.limitR=encodeLimter(str);
+				return _this;
+			},
+			setVoidModify:function(str){
+				config.voidModify=encodeLimter(str);
+				return _this;
+			}
+		};
+
+		//赋值，创建带有定界符的哈希数组
+		this.assign=function(key,val){
+			assignArr[config.limitL+key+config.limitR]=val;
+			return this;
+		};
+
+		this.display=function(elementID){
+			try{
+				var targetID=elementID||tplID;  //如果elementID为空，说明模板容器与放置容器是同一个
+				var template=document.getElementById(tplID).innerHTML;  //获取模板容器的内容
+				var ptn=new RegExp(config.limitL+'(\\w+)?'+config.limitR,'g');   //创建正则表达式
+				var tmpRegArr=template.match(ptn);   //存储所有符合条件的模板元素
+				for (var i = 0; i < tmpRegArr.length; i++) {
+					//移除模板内容中的标签，替换为值
+					var changeStr=assignArr[tmpRegArr[i]]||config.voidModify;
+					template=template.replace(tmpRegArr[i],changeStr);
+				}
+			}
+			catch(e){
+				console.log(e.message);
+				console.log('The limit code is not accord with your set.');
+			}
+
+			document.getElementById(targetID).innerHTML=template;
+			return this;
+		};
+	}
+
+	//应用：
+	//首先创建一个对象存储数据（也可以不创建，使用assign函数来赋值）
+	var tmpObj={
+		name:'小小',
+		age:16,
+		phone:13366778765,
+		QQ:4012155665
+	};
+
+	//创建一个新的模板对象
+	var jsContainer=new getTemplate('peoInfo-template');
+	for(var tmp in tmpObj){
+		//通过for循环，把数据中的值赋值到模板标签里面
+		jsContainer.assign(tmp,tmpObj[tmp]);
+	}
+	//加载放置容器
+	jsContainer.display('jsContainer');
+</script>

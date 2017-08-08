@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js代码复用模式(推荐篇)</title>
+	<style>
+		*{margin:0;padding: 0}
+		body{padding: 0 20px 20px;}
+		h4{margin: 30px 10px 10px 10px;color: #aaccee;}
+		p{line-height: 2;}
+		p.special{color: #ff4c4c}
+	</style>
+</head>
+<body>
+	<h4>js代码复用模式(推荐篇)</h4>
+	<p></p>
+</body>
+</html>
+<script src="lib/jquery/jquery-1.12.4.min.js"></script>
+<script>
+	//模式1：原型继承
+	function inheritObject(o){
+		function F(){};
+		F.prototype=o;
+		return new F();
+	}
+
+	//父类
+	function Parent(){
+		this.name='parent name.';
+	}
+	Parent.prototype.getName=function(){
+		console.log('parent prototype method getName()');
+		console.log(this.name);  
+	};
+
+	var papa=new Parent();
+	//子类
+	var Child=inheritObject(papa);
+	Child.name='child name.';
+	Child=$.extend(Child,{
+		feature:'eat eat eat'
+	});
+	console.log(Child.name);   //child name. 
+	console.log(papa.name);   //parent name. 
+	Child.getName();  //child name. ----> parent prototype method getName() (先找自己，没有再找原型链上有的属性)
+	console.log(Child.feature);  //eat eat eat
+
+	//Object.create()方法解析：
+	var a=function(){
+		this.name='a';
+	};
+	a.prototype.getName=function(){
+		console.log('a prototype getName()');
+	};
+
+	var b=Object.create(new a());
+	console.log(b.name);   //a
+	b.getName();  //a prototype getName()
+
+	//模式2：复制所有属性进行继承
+	//浅拷贝。作用跟jquery的$.extend()咋怎么像呢= =
+	function extend(parent,child){
+		var i,
+			child=child||{};
+		for(i in parent){
+			if(parent.hasOwnProperty(i)){
+				child[i]=parent[i];
+			}
+		}
+		return child;
+	}
+
+	var dad={
+		counts:[1,2,3],
+		reads:{paper:true}
+	};
+	var mam={
+		counts:[20],
+		feature:'charming'
+	};
+	var kid=extend(dad,mam);
+	kid.counts.push(4);
+	console.log('模式2：复制所有属性进行继承');
+	console.log(dad.counts.toString());   //1,2,3,4
+	console.log(dad.reads===kid.reads);   //true
+
+	//深拷贝
+	function extendDeep(parent,child){
+		var i,
+			toStr=Object.prototype.toString,
+			astr="[object Array]";
+
+		child=child||{};
+		for(i in parent){
+			if (parent.hasOwnProperty(i)) {
+				if (typeof parent[i]==='object') {
+					child[i]=(toStr.call(parent[i]))===astr?[]:{};
+					extendDeep(parent[i],child[i]);
+				}else{
+					child[i]=parent[i];
+				}
+			}
+		}
+		return child;
+	}
+
+	var father={
+		counts:[1,2,3],
+		reads:{paper:true,role:'person'}
+	};
+	var mother={
+		feature:'beautiful'
+	};
+	var littleKid=extendDeep(father,mother);
+	littleKid.counts.push(4,5,6);
+	console.log(littleKid);
+	console.log(littleKid.counts.toString());  //1,2,3,4,5,6
+	console.log(father.counts.toString());  //1,2,3
+
+	console.log(father.reads===littleKid.reads);  //false
+	
+	//模式3：混合（mix-in）
+
+	//模式4：借用方法
+	//一个对象借用另外一个对象的一个或两个方法，而这两个对象之间不会有什么直接联系。
+	var one={
+		name:'one on one',
+		say:function(greet){
+			return greet+','+this.name;
+		}
+	};
+
+	console.log('模式4：借用方法');
+	console.log(one.say('hi'));   //hi,one on one
+
+	var two={
+		name:'two apple'
+	};
+	console.log(one.say.call(two,'hello'));  //hello,two apple
+	console.log(one.say.apply(two,['hello']));  //hello,two apple
+
+	//传入一个回调函数callback
+	var yetanother={
+		name:'Yet another object',
+		method:function(callback){
+			return callback('Hola');
+		}
+	};
+	console.log(yetanother.method(one.say));  //Hola,
+
+	function bind(o,m){
+		return function(){
+			return m.apply(o,[].slice.call(arguments));
+		}
+	}
+	var twosay=bind(two,one.say);
+	console.log(twosay('yo'));  //yo,two apple
+
+	// ECMAScript 5给Function.prototype添加了一个bind()方法，以便很容易使用apply()和call()。
+	if (typeof Function.prototype.bind==='undefined') {
+		Function.prototype.bind=function(thisArg){
+			var fn=this,
+				slice=Array.prototype.slice,
+				args=slice.call(arguments,1);
+			return function(){
+				return fn.apply(thisArg,args.concat(slice.call(arguments)));
+			};
+		};
+	}
+
+	var twosay2=one.say.bind(two);
+	console.log(twosay2('haha'));  //haha,two apple
+	var twosay3=one.say.bind(two,'women');
+	console.log(twosay3());   //women,two apple
+</script>

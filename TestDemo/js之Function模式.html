@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js之Function模式</title>
+	<style>
+		*{margin:0;padding: 0}
+		body{padding: 0 20px 20px;}
+		h4{margin: 30px 10px 10px 10px;color: #aaccee;}
+		p{line-height: 2;}
+		p.special{color: #ff4c4c}
+	</style>
+</head>
+<body>
+	<h4>js之Function模式</h4>
+	<h4>Currying</h4>
+	<p>Currying是函数式编程的一个特性，将多个参数的处理转化成单个参数的处理，类似链式调用。</p>
+</body>
+</html>
+<script>
+	function conS(val){
+		console.log(val);
+	}
+	//Currying 是函数式编程的一个特性，将多个参数的处理转化成单个参数的处理，类似链式调用。
+	//简单add函数例子
+	function add(x,y){
+		var oldx=x,oldy=y;
+		if (typeof oldy==='undefined') {
+			return function(newy){
+				return oldx+newy;
+			}
+		}
+		return x + y;
+	}
+	console.log(add(1,2));  //3
+	console.log(add(10)(20));  //30
+	var add100=add(100);
+	console.log(add100(200));  //300 
+	//比较通用的currying函数
+	/*
+	* params 第一个参数为要应用的function，第二个参数是需要传入的最少参数个数
+	*/
+	function curry(func,minArgs){
+		if (minArgs==undefined) {
+			minArgs=1;
+		}
+
+		function funcWithArgsFrozen(forzenargs){
+			return function(){
+				//优化处理，如果调用时没有参数，返回该函数本身
+				var args=Array.prototype.slice.call(arguments);
+				var newArgs=forzenargs.concat(args);
+				if (newArgs.length>=minArgs) {
+					return func.apply(this,newArgs);
+				}else{
+					return funcWithArgsFrozen(newArgs);
+				}
+			};
+		}
+
+		return funcWithArgsFrozen([]);
+	}
+	//这样，我们就可以随意定义我们的业务行为了，比如定义加法：
+	var plus = curry(function(){
+		var result=0;
+		for (var i = 0; i < arguments.length; i++) {
+			result+=arguments[i];
+		}
+		return result;
+	},2);
+	//多种多样的使用方式
+	conS('多种多样的使用方式');
+	conS(plus(3,2));   //5。正常调用
+	conS(plus(3));  //..。偏应用，返回一个函数（返回值为3+参数值）
+	conS(plus(3)(2));  //5。完整应用
+	conS(plus()(3)()()(3));  //6。
+	conS(plus(3,2,4,5));   //14可以接受多个参数
+	conS(plus(3)(2,3,5));   //13
+</script>
