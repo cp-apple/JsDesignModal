@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JavaScript专题之跟着underscore学防抖</title>
+	<style>
+		#container{width: 80%;margin:20px auto;height: 200px;line-height: 200px;text-align:center;font-size:30px;background:#666;color: #fff;cursor: pointer;}
+		button{background-color: #aaccee;color: #fff;border:0;padding:5px 25px;cursor: pointer;outline: none}
+		button:hover{background-color: yellowgreen;}
+	</style>
+</head>
+<body>
+	<p align="center"><button id="cancelBtn" type='button'>取消防抖</button></p>
+	<div id="container"></div>
+	<p align="right">参考链接 <a href="https://github.com/mqyqingfeng/Blog/issues/22">JavaScript专题之跟着underscore学防抖 #22</a> ------by mqyqingfeng</p>
+</body>
+</html>
+<script>
+	  var dom=document.getElementById('container'),COUNT=1;
+
+	  function getUserAction(){
+	  	dom.innerText=COUNT++;	  	
+	  	return COUNT*100;
+	  }
+	  // dom.mousemove(function(){
+	  // 	getUserAction();
+	  // });
+
+	  //防抖 --------------------
+	  /*
+	   * wait：等待执行时长，imediate：判断是否立即执行函数
+	   */
+	  function debounce(func,wait,imediate){
+	  	var timeout,result;
+
+	  	var debounced = function(){
+	  		var context=this;
+	  		var args=arguments;
+
+	  		if(timeout) clearTimeout(timeout);
+	  		if(imediate){
+	  			//如果已经执行过，不再执行
+	  			var callNow=!timeout;
+	  			timeout=setTimeout(function(){
+	  				timeout=null;
+	  			},wait);
+	  			if(callNow) result=func.apply(context,args);
+	  		}else{
+	  			timeout=setTimeout(function(){
+	  				func.apply(context,args)
+	  			},wait);
+	  		}
+	  		return result;
+	  	};
+
+	  	//取消防抖
+	  	debounced.cancel=function(){
+	  		clearTimeout(timeout);
+	  		timeout=null;
+	  	}
+	  	return debounced;
+	  }
+	  var setUserAction=debounce(getUserAction,5000,true);
+	  dom.onmousemove=setUserAction;
+
+	  var cancelBtn=document.getElementById('cancelBtn');
+	  cancelBtn.addEventListener('click',function(){
+	  	setUserAction.cancel();
+	  });
+
+</script>
