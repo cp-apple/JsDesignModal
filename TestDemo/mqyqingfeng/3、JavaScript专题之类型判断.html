@@ -100,4 +100,41 @@
 	var isArr=[1,'a',2,null],str='ssss';
 	console.log('str是否是一个数组：'+isArray(str));
 	console.log('isArr是否是一个数组：'+isArray(isArr));
+
+	//判断一个对象是否是空对象
+	function isEmptyObject(obj){
+		var name;
+		for(name in obj){
+			return false;
+		}
+		return true;
+	}
+	var a={},b={a:1};
+	console.log(isEmptyObject({})); // true
+	console.log(isEmptyObject([])); // true
+	console.log(isEmptyObject([1,2])); // false
+	console.log(isEmptyObject(null)); // true
+	console.log(isEmptyObject(undefined)); // true
+	console.log(isEmptyObject(1)); // true
+	console.log(isEmptyObject('')); // true
+	console.log(isEmptyObject('da')); // false
+	console.log(isEmptyObject(true)); // true
+	console.log(isEmptyObject(false)); // true
+	console.log('对象a为空么？'+isEmptyObject(a));  //true
+	console.log('对象b为空么？'+isEmptyObject(b));  //false
+
+	//window对象判断
+	//Window 对象作为客户端 JavaScript 的全局对象，它有一个 window 属性指向自身
+	function isWindow(obj){
+		return obj!==null&&obj==obj.window;
+	}
+	console.log('是window对象么？'+isWindow({window}));  //true
+
+	//判断是不是DOM元素
+	function isElement(obj){
+		return !!(obj&&obj.nodeType===1);
+	}
+	var body=document.getElementsByTagName('body')[0];
+	console.log(body);
+	console.log('body是一个DOM元素么？'+isElement(body));
 </script>
