@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JavaScript专题之数组去重</title>
+</head>
+<body>
+	<p>数组为：<span id="arrValue"></span></p>
+	<p>去重结果为：<span id="arrResult"></span></p>
+	<p>排序去重数组为：<span id="arrSortValue"></span></p>
+	<p>排序去重结果为：<span id="arrSortResult"></span></p>
+	<p>不区分大小写的去重数组为：<span id="smallBigValue"></span></p>
+	<p>不区分大小写的去重结果为：<span id="smallBigResult"></span></p>
+	<input id="date" type="date">
+</body>
+</html>
+<script>
+	//数组去重
+	function arrUnique(array){
+		//res用来存储结果
+		var res=[];
+		for (var i = 0,arrLength=array.length; i <arrLength ; i++) {
+			for (var j = 0,resLength=res.length; j < resLength; j++) {
+				if(array[i]==res[j]){
+					break;
+				}
+			}
+	
+			if(j===resLength){
+				res.push(array[i]);
+			}
+		}
+		return res;
+	}
+
+	var arr=[1,2,3,3,3,'aa','b','b'];
+	arrValue.innerText=arr;
+	arrResult.innerText=arrUnique(arr);
+
+	//排序去重
+	function sortUnique(arr){
+		//这里的arr.concat()相当于复制一个数组，并且对该数组的操作不影响原数组
+		return arr.concat().sort(function(a,b){
+			return a-b;
+		}).filter(function(item,index,arr){
+			return !index||item!=arr[index-1]
+		});
+	}
+	var sortArr=[1,23,1,23,212,3,45,12,3];
+	arrSortValue.innerText=sortArr;
+	arrSortResult.innerText=sortUnique(sortArr);
+
+	//排序去重，并且字母不区分大小写
+	/*
+	 * param:
+	 * arr:排序去重传入的数组
+	 * isStored:数组是否已经进行了排序
+	 * iteratee:传入一个函数，可以对每个元素进行重新的计算，然后根据处理的结果进行去重
+	 */
+	function smallBigUnique(arr,isSorted,iteratee){
+		var res=[];
+		var seen=[];
+
+		for (var i = 0,len=arr.length; i < len; i++) {
+			var value=arr[i];
+			var computed=iteratee?iteratee(value,i,arr):value;
+			if(isSorted){
+				if(!i||seen!==computed){
+					res.push(value);
+				}
+				seen=computed;
+			}else if(iteratee){
+				if(seen.indexOf(computed)===-1){
+					seen.push(computed);
+					res.push(value);
+				}
+			}else if(res.indexOf(value)===-1){
+				res.push(value);
+			}
+		}
+		return res;
+	}
+
+	var smallBigArr=[33,34,'aa','AA',3,1,2,34,'c',1,'C'];
+	smallBigValue.innerText=smallBigArr;
+	smallBigResult.innerText=smallBigUnique(smallBigArr,false,function(item){
+		return typeof item=='string'?item.toLowerCase():item;
+	});
+	date.value='2017-10-30'
+</script>

@@ -18,3 +18,4 @@
 2017-07-31 tag：js之代码复用、js中模板开发示例
 2017-09-09 tag：js设计模式之解释器模式（语言翻译）
 2017-10-26 tag：JavaScript专题之跟着underscore学防抖
+2017-10-31 tag：JavaScript的防抖，数组去重，类型判断
