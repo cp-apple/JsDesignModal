@@ -19,3 +19,6 @@
 * 2017-09-09 tag：js设计模式之解释器模式（语言翻译）
 * 2017-10-26 tag：JavaScript专题之跟着underscore学防抖
 * 2017-10-31 tag：JavaScript的防抖，数组去重，类型判断
+* 2017-11-02 tag：深浅拷贝，jQuery extend方法的实现
+
+

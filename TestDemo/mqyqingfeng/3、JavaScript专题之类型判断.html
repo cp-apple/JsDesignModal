@@ -94,7 +94,7 @@
 	console.log('func是否是一个函数：'+isFunction(func));
 
 	//判断一个对象是否为数组类型
-	var isArray=Array.isArray(obj)||function(obj){
+	var isArray=Array.isArray||function(obj){
 		return type(obj)==='array';
 	}
 	var isArr=[1,'a',2,null],str='ssss';

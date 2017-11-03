@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JavaScript专题之jQuery.extend()的实现</title>
+</head>
+<body>
+	
+</body>
+</html>
+<script src="../lib/jquery/jquery-1.12.4.min.js"></script>
+<script src="../lib/common.js"></script>
+<script>
+	var obj1={
+		a:1,
+		b:{b1:1,b2:2}
+	};
+	var obj2={
+		b:{b1:3,b3:4},
+		c:3
+	};
+	var obj3={
+		d:4
+	}
+	//console.log($.extend(obj1,obj2,obj3));  //{a: 1, b: {b1: 3, b3: 4} c: 3, d: 4}
+	//console.log($.extend(true,obj1,obj2,obj3));  //{a: 1, b: {b1: 3, b2: 2, b3: 4} c: 3, d: 4}
+
+	//extend实现第一版（浅拷贝）
+	function myExtend1(){
+		var name,options,copy;
+		var length=arguments.length;
+		var i=1;
+		var target=arguments[0];
+		for (; i < length; i++) {
+			options=arguments[i];
+			if(options!=null){
+				for(name in options){
+					copy=options[name];
+					if(options[name]!=undefined){
+						target[name]=copy;
+					}
+				}
+			}
+		}
+
+		return target;
+	}
+	//console.log(myExtend1(obj1,obj2,obj3));  //{a: 1, b: {b1: 3, b3: 4}, c: 3, d: 4}
+
+	//extend实现第二版（深拷贝）(最终版)
+	//需要注意：1、根据第一个参数类型，确定target和要合并对象的下标起始值
+	//			2、如果为深拷贝，则根据copy的类型递归myExtend2
+	//判断是否是纯粹的对象
+	var class2type = {};
+	var toString = class2type.toString;
+	var hasOwn = class2type.hasOwnProperty;
+	function isPlainObject(obj) {
+	    var proto, Ctor;
+	    if (!obj || toString.call(obj) !== "[object Object]") {
+	        return false;
+	    }
+	    proto = Object.getPrototypeOf(obj);
+	    if (!proto) {
+	        return true;
+	    }
+	    Ctor = hasOwn.call(proto, "constructor") && proto.constructor;
+	    return typeof Ctor === "function" && hasOwn.toString.call(Ctor) === hasOwn.toString.call(Object);
+	}
+	
+	function myExtend2(){
+		//默认不进行深度拷贝
+		var deep=false;
+		var name,options,src,copy,clone,copyIsArray;
+		var length=arguments.length;
+		//记录要复制对象的下标
+		var i=1;
+		//第一个参数不传布尔值的情况下，target默认是第一个参数
+		var target=arguments[0]||{};
+		//如果第一个参数是布尔型，第二个参数才是target
+		if(typeof target=='boolean'){
+			deep=target;
+			target=arguments[i]||{};
+			i++;
+		}
+
+		//如果target不是对象，我们是无法进行复制的，所以设为{}
+		if(typeof target!=='object'&&!cp_wrapper.isFunction(target)){
+			target={};
+		}
+
+		//循环遍历要复制的对象们
+		for(;i<length;i++){
+			//获取当前对象
+			options=arguments[i];
+			//不能为空，避免extend(a,,b)这种情况
+			if (options!=null) {
+				for(name in options){
+					//目标属性值
+					src=target[name];
+					//要复制的对象的属性值
+					copy=options[name];
+
+					//解决循环引用
+					if(target===copy){
+						continue;
+					}
+
+					//要递归的对象必须是plainObject或者数组
+					if(deep && copy &&(isPlainObject(copy)||(copyIsArray=Array.isArray(copy)) )){
+						//要复制的对象属性值类型需要与目标属性值相同
+						if(copyIsArray){
+							copyIsArray=false;
+							clone=src&&Array.isArray(src)?src:[];
+						}else{
+							clone=src&&isPlainObject(src)?src:{};
+						}
+						//递归调用
+						target[name]=myExtend2(deep,clone,copy);
+					}else if(copy!==undefined){
+						target[name]=copy;
+					}
+				}
+			}
+		}
+
+		return target;
+	}
+	console.log(myExtend2(true,obj1,obj2,obj3));  //{a: 1, b: {b1: 3, b2: 2, b3: 4}, c: 3, d: 4}
+
+</script>
+
+

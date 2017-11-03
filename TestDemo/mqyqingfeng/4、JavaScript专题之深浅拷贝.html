@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JavaScript专题之深浅拷贝</title>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+	//浅拷贝(concat()举例，slice()类似)(技巧性的)
+	var a=[1,2],b=[3,4];
+	var c=a.concat(b);  //[1,2,3,4]
+	a.push(5);
+	console.log(a);  //[1,2,5]
+	console.log(c);  //[1,2,3,4]
+
+	var aa=[{new:'new'},{aa:'aa'}],bb=['aaccee'];
+	var cc=aa.concat(bb);  //[{new:'new'},{aa:'aa'},'aaccee']
+	aa[0].new='old';
+	console.log(aa);  //[{new:'old'},{aa:'aa'}]
+	console.log(cc);  //[{new:'old'},{aa:'aa'},'aaccee']
+	//总结：如果数组元素是基本类型，就会拷贝一份，互不影响，而如果是对象或者数组，就会只拷贝对象和数组的引用，这样我们无论在新旧数组进行了修改，两者都会发生变化。我们把这种复制引用的拷贝方法称之为浅拷贝。
+
+	//深拷贝(技巧性的)
+	var arr=['old',1,true,{old1:11,old2:22},[1,2,3]];
+	var new_arr=JSON.parse(JSON.stringify(arr));
+	arr[3]=false;
+	console.log(arr);  //['old',1,false,{old1:11,old2:22},[1,2,3]]
+	console.log(new_arr);  //['old',1,true,{old1:11,old2:22},[1,2,3]]
+
+	//浅拷贝的实现
+	var shallowCopy=function(obj){
+		if(typeof obj !== 'object') return;
+		var newObj=obj instanceof Array?[]:{};
+		for(var key in obj){
+			if(obj.hasOwnProperty(key)){
+				newObj[key]=obj[key];
+			}
+		}
+		return newObj;
+	}
+	var arr2=[1,2,'ss',false,4,5,6,{aa:'aa'}],obj2={a:1,b:2,c:3};
+	console.log(shallowCopy(arr2));  //[1,2,'ss',false,4,5,6,{aa:'aa'}]
+	console.log(shallowCopy(obj2));  //{a:1,b:2,c:3}
+
+	//深拷贝的实现
+	var deepCopy=function(obj){
+		if(typeof obj !== 'object') return;
+		var newObj=obj instanceof Array?[]:{};
+		for(var key in obj){
+			if(obj.hasOwnProperty(key)){
+				newObj[key]=typeof obj[key]==='object'?deepCopy(obj[key]):obj[key];
+			}
+		}
+		return newObj;
+	}
+	var arr3=[{aa:'aa',bb:'bb'},'afd',null,23,['coco',false]];
+	var new_arr3=deepCopy(arr3);
+	arr3[0].bb='aabbccdd';
+	console.log(arr3);  //[{aa:'aa',bb:'aabbccdd'},'afd',null,23,['coco',false]]
+	console.log(new_arr3);  //[{aa:'aa',bb:'bb'},'afd',{},23,['coco',false]]
+</script>
+
