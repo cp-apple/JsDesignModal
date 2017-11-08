@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>数组扁平化及求数组的最大最小值</title>
+	<style>
+		img{
+			width:200px;
+			height: 200px;
+			border-radius: 50%;
+		}
+	</style>
+</head>
+<body>
+	<img id="imgError" src="../cc/img.png" alt="" onError="imgOnError(this)">
+</body>
+</html>
+<script>
+	//图片加载失败测试
+	var imgError=document.getElementById('imgError');
+	function imgOnError(){
+		imgError.src='../images/a4.jpg';
+	}
+
+	//数组求最大值(最小值类似)
+	var arr=[1,2131,431,23,12,-12,2-122];
+	console.log(Math.max(...arr));  //2131
+	//1、reduce
+	function max(prev,next){
+		return Math.max(prev,next);
+	}
+	console.log(arr.reduce(max));  //2131
+	//2、排序
+	arr.sort(function(a,b){return a-b;});  //2131
+	console.log(arr[arr.length-1]);
+	console.log(arr);  // [-120, -12, 1, 12, 23, 431, 2131]
+	//3、eval
+	var max=eval("Math.max("+arr+")");
+	console.log(max);  //2131
+	//4、apply
+	console.log(Math.max.apply(null,arr));  //2131
+	console.log(Math.min.apply(null,arr));  //-120
+	//5、ES6 ...
+	console.log(Math.max(...arr));  //2131
+
+	//数组扁平化：将一个嵌套多层的数组array(嵌套可以是任意层数)转换为只有一层的数组。例：
+	//var a=[1,[2,3,[4,5]];
+	//console.log(flatten);  //[1,2,3,4,5]
+	//1、扁平化
+	var flattenArr=[1,[2,3,[4,5,[6,7],8]],9,10];
+	function flatten(arr){
+		var result=[];
+		for(var i=0,len=arr.length;i<len;i++){
+			if(Array.isArray(arr[i])){
+				result=result.concat(flatten(arr[i]));
+			}else{
+				result.push(arr[i]);
+			}
+		}
+		return result;
+	}
+	console.log(flatten(flattenArr));
+	//2、toString
+	var flattenStr=flattenArr.toString();
+	console.log(flattenStr.split(','));
+	//3、reduce
+	function flattenReduce(arr){
+		return arr.reduce(function(prev,next){
+			return prev.concat(Array.isArray(next)?flattenReduce(next):next);
+		},[]);
+	}
+	console.log(flattenReduce(flattenArr));
+	//4、es6 ...运算符（仅仅可以扁平化一层）
+	function flattenDot(arr){
+		while(arr.some(item=>Array.isArray(item))){
+			arr=[].concat(...arr);
+		}
+		return arr;
+	}
+	console.log(flattenDot(flattenArr));
+	//undercore
+	/*
+	 * 数组扁平化
+	 * @param {Array} input 要处理的数组
+	 * @param {boolean} shallow 是否只扁平一层
+	 * @param {boolean} strict 是否严格处理元素
+	 * @param {Array} output 这是为了方便递归而传递的参数
+	 * 源码地址：https://github.com/jashkenas/underscore/blob/master/underscore.js#L528
+	 */
+	function flattenFunc(input,shallow,strict,output){
+	 	//递归使用的时候会用到output
+	 	output=output||[];
+	 	var idx=output.length;
+	 	for(var i=0,len=input.length;i<len;i++){
+	 		var value=input[i];
+	 		//如果是数组，就进行处理
+	 		if(Array.isArray(value)){
+	 			//只扁平化一层
+	 			if(shallow){
+	 				var j=0,len=value.length;
+	 				while(j<len) output[idx++]=value[j++];
+	 			}else{  //
+	 				flattenFunc(value,shallow,strict,output);
+	 				idx=output.length;
+	 			}
+	 		}
+	 		//不是数组，根据strict的值判断是跳过不处理还是放入output	
+	 		else if(!strict){
+	 			output[idx++]=value;
+	 		}
+	 	}
+	 	return output;
+	}
+	//解释下 strict，在代码里我们可以看出，当遍历数组元素时，如果元素不是数组，就会对 strict 取反的结果进行判断，如果设置 strict 为 true，就会跳过不进行任何处理，这意味着可以过滤非数组的元素
+	//shallow true + strict false ：正常扁平一层
+	//shallow false + strict false ：正常扁平所有层
+	//shallow true + strict true ：去掉非数组元素
+	//shallow false + strict true ： 返回一个[]
+	var flatVal=[1,2,[3,4]];
+	console.log(flattenFunc(flatVal,true,true));  //[3,4]
+	console.log(flattenFunc(flattenArr,false,false));  //[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+	//扩展
+	//_.flatten：扁平化数组
+	// _.flatten=function(arr,shallow){
+	// 	return flattenFunc(arr,shallow,false);
+	// };
+	
+</script>
+
+
+
+
+
+
+

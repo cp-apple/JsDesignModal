@@ -3,8 +3,72 @@
 <head>
 	<meta charset="UTF-8">
 	<title>flex 弹性布局</title>
+	<style>
+		.flexUl{
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: flex-start;
+			padding: 10px 0;
+			border:1px dashed #ddd;
+		}
+		.flexUl li{
+			width:30%;
+			background-color: yellowgreen;
+			color: #fff;
+			list-style: none;
+			text-align: center;
+			line-height: 40px;
+			margin: 10px;
+		}
+		.flexUl li:nth-child(3){
+			align-self: flex-end;
+		}
+	</style>
 </head>
 <body>
-	
+	<div class="container">
+		<template id='myTemplate'>
+			<div style="width:200px;border: 1px solid #ccaaee;padding: 5px;">
+				<div>我是一个template模板</div>
+				<p>兼容性：ie不支持</p>
+			</div>
+		</template>
+		<h2>Flex布局兼容性：ie10及以上</h2>
+		<h4>一、容器的属性：</h4>
+		<ul>
+			<li>flex-direction: row | row-reverse | column | column-reverse;</li>
+			<li>flex-wrap: nowrap | wrap | wrap-reverse;</li>
+			<li>flex-flow: &lt;flex-direction&gt; || &lt;flex-wrap&gt;;</li>
+			<li>justify-content: flex-start | flex-end | center | space-between | space-around;</li>
+			<li>align-items: flex-start | flex-end | center | baseline | stretch; </li>
+			<li>align-content: flex-start | flex-end | center | space-between | space-around | stretch;<br/> 属性定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用。</li>
+		</ul>
+		
+		<h4>二、项目的属性</h4>
+		<ul>
+			<li>order: &lt;integer&gt;;<br/>属性定义项目的排列顺序。数值越小，排列越靠前，默认为0。</li>
+			<li>flex-grow: &lt;number&gt;; /* default 0 */<br/>属性定义项目的放大比例，默认为0，即如果存在剩余空间，也不放大。<br>如果所有项目的flex-grow属性都为1，则它们将等分剩余空间（如果有的话）。如果一个项目的flex-grow属性为2，其他项目都为1，则前者占据的剩余空间将比其他项多一倍。 </li>
+			<li>flex-shrink: &lt;number&gt;; /* default 1 */<br>属性定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小。<br>如果所有项目的flex-shrink属性都为1，当空间不足时，都将等比例缩小。如果一个项目的flex-shrink属性为0，其他项目都为1，则空间不足时，前者不缩小。<br>负值对该属性无效。</li>
+			<li>flex-basis:  &lt;length&gt; | auto; /* default auto */<br/>属性定义了在分配多余空间之前，项目占据的主轴空间（main size）。浏览器根据这个属性，计算主轴是否有多余空间。它的默认值为auto，即项目的本来大小。<br>它可以设为跟width或height属性一样的值（比如350px），则项目将占据固定空间。</li>
+			<li>flex: none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]<br/>属性是flex-grow, flex-shrink 和 flex-basis的简写，默认值为0 1 auto。后两个属性可选。<br>该属性有两个快捷值：auto (1 1 auto) 和 none (0 0 auto)。<br/>建议优先使用这个属性，而不是单独写三个分离的属性，因为浏览器会推算相关值。</li>
+			<li>align-self: auto | flex-start | flex-end | center | baseline | stretch;<br>属性允许单个项目有与其他项目不一样的对齐方式，可覆盖align-items属性。默认值为auto，表示继承父元素的align-items属性，如果没有父元素，则等同于stretch。</li>
+		</ul>
+		
+		<h4>示例：</h4>
+		<ul class="flexUl">
+			<li>a<br/>a<br>a</li>
+			<li>b</li>
+			<li>c<br>c</li>
+			<li>d</li>
+			<li>e</li>
+		</ul>
+
+	</div>
 </body>
 </html>
+<script>
+	var myTemplate=document.getElementById('myTemplate'),container=document.getElementsByClassName('container')[0];
+	var temHtml=myTemplate.innerHTML;
+	container.insertAdjacentHTML('beforeend',temHtml);
+</script>

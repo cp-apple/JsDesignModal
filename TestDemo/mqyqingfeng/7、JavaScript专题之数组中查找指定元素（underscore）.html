@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>JavaScript专题之数组中查找指定元素（underscore）</title>
+</head>
+<body>
+	
+</body>
+</html>
+<script>
+	//es6的findIndex方法(ie完全不兼容)：返回数组中满足提供的函数的第一个元素的索引，否则返回-1
+	var arr=[1,2,3,4,56,2,3,1,3];
+	var targetNum=arr.findIndex(function(num){
+		return num>10
+	});  
+	console.log('es6 findIndex()：'+targetNum);  //4 
+
+	//实现findIndex (数组中第一个符合条件的元素的下标)
+	function findIndex1(arr,fn,context){
+		for (var i = 0; i < arr.length; i++) {
+			if(fn.call(context,arr[i],i,arr)) return i;
+		}
+		return -1;
+	}
+	console.log('findIndex1()：'+findIndex1(arr,function(item,index,array){
+		if(item==4) return true;
+	}));  //3
+
+	//findLastIndex的实现 (数组中最后一个符合条件的元素的下标)
+	function findLastIndex1(arr,fn,context){
+		for (var i = arr.length-1; i> 0; i--) {
+			if(fn.call(context,arr[i],i,arr)) return i
+		}
+		return -1;
+	}
+	console.log('findLastIndex1()：'+findLastIndex1(arr,function(item,index,array){
+		if(item==3) return true;
+	})); //8
+
+	//***** question:如何根据参数的不同，在同一个循环中，实现正序和倒序遍历呢？*****
+	//createIndexFinder
+	function createIndexFinder(dir){
+		return function(arr,fn,context){
+			var len=arr.length;
+			var index=dir>0?0:len-1;
+			for (;index>=0&&index<len;index+=dir) {
+				if(fn.call(context,arr[index],index,arr)) return index;
+			}
+			return -1;
+		}
+	}
+	var findIndex2=createIndexFinder(1);
+	var findLastIndex2=createIndexFinder(-1);
+	console.log(findIndex2(arr,function(item,index,array){
+		if(item==3) return true;
+	}));  //2
+	console.log(findLastIndex2(arr,function(item,index,array){
+		if(item==3) return true;
+	}));  //8
+</script>
+
+
