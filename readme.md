@@ -21,4 +21,4 @@
 * 2017-10-31 tag：JavaScript的防抖，数组去重，类型判断
 * 2017-11-02 tag：深浅拷贝，jQuery extend方法的实现
 * 2017-11-06 tag：[css flex布局](cssDemo/flex-layout.html),数组扁平化及求数组的最大最小值
-* 2017-11-07 tag：数组中查找指定元素
+* 2017-11-07 tag：数组中查找指定元素，indexOf方法的实现

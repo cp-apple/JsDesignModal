@@ -58,6 +58,73 @@
 	console.log(findLastIndex2(arr,function(item,index,array){
 		if(item==3) return true;
 	}));  //8
+
+	//一个新需求：在一个排好序的数组中找到 value 对应的位置，保证插入数组后，依然保持有序的状态。
+	//sortedIndex(因为是有序数组，且都为数字，所以可以用二分查找法)
+	function sortedIndex(arr,obj){
+		var low=0,high=arr.length;
+		while(low<high){
+			var mid=Math.floor((low+high)/2);
+			if(arr[mid]<obj) low=mid+1;
+			else high=mid;
+		}
+		return high;
+	}
+	var sortArr=arr.sort(function(a,b){
+		return a>b;
+	});
+	console.log(sortArr);  //[1, 1, 2, 2, 3, 3, 3, 4, 56]
+	console.log(sortedIndex(sortArr,1.5));  //2
+
+	//indexOf的实现------------
+	//第一版、（第二版）、（最终版）
+	//predicate:用于判断NaN，查找NaN元素的下标
+	//sortedIndex:用于对有序数组进行更快的二分查找
+	function createIndexOfFinder(dir,predicate,sortedIndex){
+		//arr:查询的目标数组、item:查找项、idx:开始查找的位置
+		return function(arr,item,idx){
+			var length=arr.length;
+			var index=0;
+
+			//设置开始查找的位置
+			if(typeof idx=='number'){
+				if(dir>0){
+					index=idx>=0?idx:Math.max(length+idx,0);
+				}else{
+					length=idx>=0?Math.min(idx+1,length):idx+length+1;
+				}
+			}else if(sortedIndex&&idx&&length){
+				idx=sortedIndex(arr,item);
+				//如果该插入的位置的值正好等于元素的值，说明是第一个符合要求的值
+				return arr[idx]===item?idx:-1;
+			}
+
+			//判断元素是否是NaN，查找NaN元素的下标
+			if(item!==item){
+				//在截取好的数组中查找第一个满足isNaN函数的元素的下标
+				idx=predicate(arr.slice(index,length),isNaN);
+				return idx>=0?idx+index:-1;
+			}
+
+			for(idx=dir>0?index:length-1;idx>=0&&idx<length;idx+=dir){
+				if(arr[idx]==item) return idx;
+			}
+			return -1;
+		}
+	}
+	var indexOf=createIndexOfFinder(1,findIndex1);
+	var lastIndexOf=createIndexOfFinder(-1,findLastIndex1);
+	var newArr=[1,9,8,2,3,7,4,6,5,NaN];
+	console.log(newArr.length);  //10
+	console.log(indexOf(newArr,8,1));   //2
+	console.log(indexOf(newArr,8,4));   //-1
+	console.log(lastIndexOf(newArr,8));   //2
+	console.log(lastIndexOf(newArr,NaN));   //9
+	//注意：在 underscore 的实现中，只有 indexOf 是支持有序数组使用二分查找，lastIndexOf 并不支持。
+	var indexOf2grade=createIndexOfFinder(1,findIndex1,sortedIndex);
+	console.log(indexOf2grade(newArr,6,0));  //7
+	//indexOf的实现------------
+
 </script>
 
 
