@@ -3,16 +3,155 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	<style>
+		.box{
+			position: relative;
+			margin: 30px 60px;
+			width: 200px;
+			height: 200px;
+			border:1px solid #ddd;
+			border-radius: 10px;
+		}
+		.con{
+			position: absolute;
+			top:50px;
+			left:50px;
+			width: 100px;
+			height: 100px;
+			cursor: pointer;
+			border-radius: 85px 0 0 0;
+		}
+		.con1{
+			z-index: 10;
+			transition: all 1s;
+			opacity:1;
+			background-color: yellowgreen;
+		}
+		.con1:hover{
+			opacity:0;
+		}
+		.con2{
+			z-index: 8;
+			background-color: #aaccee;
+		}
+		.transitionBox{
+			position: relative;
+			top: 0;
+			left: 50px;
+			padding: 10px;
+			margin-bottom: 150px;
+			width: 680px;
+			border-radius: 10px;
+			box-shadow: 0 0 3px #000;
+			background-color: #ccaaee;
+			cursor: pointer;
+			transition: top .6s;
+		}
+		.transitionBox:hover{
+			top: -10px;
+		}
+		.transitionBox div{
+			position: relative;
+			z-index: 10;
+		}
+		.transitionBox:after{
+			content: "";
+			display: block;
+			position: absolute;
+			bottom: -40px;
+			left: 50%;
+			height: 7px;
+			width: 0;
+			box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.4);
+			border-radius: 50%;
+			background-color: rgba(0, 0, 0, 0.2);
+			transform: translate(-50%, 0);
+			transition: all ease-in-out .6s 1s;
+
+		}
+		.transitionBox:hover:after{
+			width: 100%;
+		}
+		/*卷书边效果*/
+		.dog_ears{
+			position: relative;
+			margin: 50px;
+			width: 200px;
+			height: 200px;
+			text-align: center;
+			line-height: 200px;
+			border:1px solid #ddd;
+			box-shadow: 0 0 5px #eee;
+			background: #ddd radial-gradient(#eee 50%,#ddd 90%);
+			border-radius: 10px;
+			overflow: hidden;
+		}
+		.dog_ears:after{
+			content: '';
+			position: absolute;
+			bottom: -5px;
+			right:-5px;
+			width: 40px;
+			height: 40px;
+			border:1px solid #ddd;
+			border-radius: 10px 0 10px 0;
+			background: #ddd linear-gradient(to right bottom,#eee,#ddd);
+			box-shadow: -3px -3px 1px 0 #ddd
+		}
+		pre{
+			line-height: 2em;
+			font-size: 1em;
+			padding: .5em;
+			background: linear-gradient(#ccf2f2 50%,#fff 50%);
+			background-size: 100% 4em;
+			background-origin: content-box;
+		}
+	</style>
 </head>
 <body>
-	<p>逗</p>
-	<h2>听说有人在逗我？what？</h2>
+	<p>hello</p>
+	<h2>I don't understand what you're talking about.</h2>
+	<h2>Yes,you do.  ------不，你知道。</h2>
 
-	<div style="cursor: pointer;background-color: #ccddee">I'm a kids.</div>
+	<div id="dom" style="cursor: pointer;background-color: #ccddee">I'm a kids.</div>
 	<pre>
 		白衣残雪两相忘，
 		不知茫茫。
 	</pre>
+
+	<div class="box">
+		<div class="con con1"></div>
+		<div class="con con2"></div>
+	</div>
+
+	<div class="transitionBox">
+		<div>
+			<p>transition兼容性：ie11及以上</p>
+			<h2>语法：transition: property duration timing-function delay;</h2>
+			<ul>
+				<li>property：设置过渡效果的 CSS 属性的名称。</li>
+				<li>duration：完成过渡效果需要多少秒或毫秒。</li>
+				<li>
+					timing-function：速度效果的速度曲线。
+					<pre>
+	值			描述
+	linear	规定以相同速度开始至结束的过渡效果（等于 cubic-bezier(0,0,1,1)）。
+	ease	规定慢速开始，然后变快，然后慢速结束的过渡效果（cubic-bezier(0.25,0.1,0.25,1)）。
+	ease-in	规定以慢速开始的过渡效果（等于 cubic-bezier(0.42,0,1,1)）。
+	ease-out	规定以慢速结束的过渡效果（等于 cubic-bezier(0,0,0.58,1)）。
+	ease-in-out	规定以慢速开始和结束的过渡效果（等于 cubic-bezier(0.42,0,0.58,1)）。
+	cubic-bezier(n,n,n,n)	在 cubic-bezier 函数中定义自己的值。可能的值是 0 至 1 之间的数值。
+					</pre>
+				</li>
+				<li>delay：定义过渡效果何时开始。</li>
+			</ul>
+			<p>本示例阴影过渡为：transition: all ease-in-out .6s 1s;</p>
+		</div>			
+	</div>
+	<div>
+		<h2>卷书边效果：</h2>
+		<div class="dog_ears">狗耳朵|卷书边</div>
+	</div>
 </body>
 </html>
 <script src="lib/jquery/jquery-1.12.4.min.js"></script>
@@ -20,5 +159,5 @@
 <script>
 	$('body p').demo1_1();
 	$('p').dblClickSomeEle();
-	$('body').cp_wrapper_child.showChild($('div'));
+	$('body').cp_wrapper_child.showChild($('#dom'));
 </script>

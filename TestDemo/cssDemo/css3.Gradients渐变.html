@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>css3渐变</title>
+	<link rel="stylesheet" href="../css/common.css">
+	<style>
+		.box{
+			margin: 20px 50px;
+			width:350px;
+			height: 350px;
+			border:1px solid #ddd;
+			border-radius: 20px;
+		}
+		.linearBox1{
+			background:#aaccee linear-gradient(to right bottom,#aaccee 10%,#fea,#eea,#336 92%);
+		}
+		.linearBox2{
+			background:#aaccee linear-gradient(45deg,red,green,yellow,rgba(0,0,0,.4) 70%);
+		}
+		.linearBox3{
+			background:#aaccee repeating-linear-gradient(to right,red,green 10%,yellow 20%);
+		}
+		.radialBox1{
+			background:#aaccee -webkit-radial-gradient(80% 50%,ellipse farthest-side,red,yellow,green,black 80%);
+		}
+		.radialBox2{
+			border-radius: 50%;
+			background:#aaccee -webkit-repeating-radial-gradient(50% 50%,circle closest-side,red,yellow,green,black 20%);
+		}
+	</style>
+</head>
+<body>
+	<h4>兼容性：ie10及以上</h4>
+	<h4>一、linear-gradient：线性渐变</h4>
+	<p>a. 标准语法：background: linear-gradient(direction, color-stop1, color-stop2, ...);</p>
+	<h4>示例：</h4>
+	<div class="box linearBox1"></div>
+	<h4>b. 使用角度</h4>
+	<p>语法：background: linear-gradient(angle, color-stop1, color-stop2, ...);</p>
+	<h4>示例：</h4>
+	<div class="box linearBox2"></div>
+	<h4>c. 重复的线性渐变</h4>
+	<p>语法：repeating-linear-gradient(略)</p>
+	<h4>示例：</h4>
+	<div class="box linearBox3"></div>
+	<h4>二、radial-gradient：径向渐变</h4>
+	<p>语法：radial-gradient(center, shape size, start-color, ..., last-color);</p>
+	<ul>
+		<li>shape 参数定义了形状。shape：circle | ellipse（默认）</li>
+		<li>size 参数定义了渐变的大小。size:closest-side | farthest-side | closest-corner | farthest-corner(默认)</li>
+	</ul>
+	<h4>示例：</h4>
+	<div class="box radialBox1"></div>
+	<h4>重复的径向渐变repeating-radial-gradient()，示例如下：</h4>
+	<div class="box radialBox2"></div>
+</body>
+</html>

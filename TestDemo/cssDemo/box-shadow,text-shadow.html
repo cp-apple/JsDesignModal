@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>对css3 box-shadow阴影的理解</title>
+	<link rel="stylesheet" href="../css/common.css">
+	<style>
+		.box{
+			margin: 0 50px 20px;
+			width: 100px;
+			height: 100px;
+			border: 1px solid #ddd;
+			border-radius: 10px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.shadow{
+			box-shadow: 5px 5px 3px 0 #e1e1e1;
+		}
+		.rotateBox{
+			position: relative;
+			height: 300px;
+		}
+		.shadowImg{
+			position: absolute;
+			left: 50px;
+			display: block;
+			width: 200px;
+			height: 260px;
+			border-radius: 150px 20px 100px 20px;
+			box-shadow: 0 0 10px #000;
+			cursor: pointer;
+			transition: all 0.6s;
+			z-index: 10;
+		}
+		.shadowImg.hover{
+			transform: rotate3d(0,1,0,180deg);
+		}
+		#rotateImgBtn{
+			border:0;
+			background-color: #eeeddd;
+			color: #666;
+			padding: 10px 20px;
+			cursor: pointer;
+			box-shadow: 0 0 0 4px #edd inset;
+			transition: all .3s;
+			outline: none;
+			margin-left: 75px;
+		}
+		#rotateImgBtn:hover{
+			box-shadow: 0 0 0 4px #ebd inset;
+		}
+		.text{
+			font-size: 20px;
+			color: #fff;
+			text-shadow: 3px 0 3px #000;
+		}
+	</style>
+</head>
+<body>
+	<h4>box-shadow的浏览器兼容性：ie9及以上</h4>
+	<h4>语法：</h4>
+	<p>box-shadow: h-shadow v-shadow <span class="red">blur(模糊距离)</span> <span class="green">spread(阴影尺寸)</span> color inset;</p>
+	<h4>示例：</h4>
+	<div class="box shadow"><span>阴影盒子</span></div>
+	<div class="rotateBox">
+		<img class="shadowImg img1" src="../images/b4.jpg" alt="">
+		<img class="shadowImg img2" src="../images/b1.jpg" alt="">
+	</div>
+	
+	<button id="rotateImgBtn" type="button">点击旋转图片</button>
+	<hr>
+	<h4>text-shadow的浏览器兼容性：ie9以上(不包括ie9)</h4>
+	<h4>语法：</h4>
+	<p>text-shadow: h-shadow v-shadow <span class="red">blur(模糊距离)</span> color;</p>
+	<h4>示例：</h4>
+	<div class="text">我是一段阴影字体。</div>
+</body>
+</html>
+<script src="../lib/jquery/jquery-1.12.4.min.js"></script>
+<script>
+	//3d旋转图片
+	$('#rotateImgBtn').click(function(){		
+		$('.shadowImg').each(function(i,item){
+			if($(item).hasClass('hover')){
+				$(item).removeClass('hover');
+			}else{
+				$(item).addClass('hover');
+			}			
+		});
+		if($('.img1').css('zIndex')*1==10){
+			setTimeout(function(){
+				$('.img1').css('zIndex',100);
+			},500);
+		}else{
+			setTimeout(function(){
+				$('.img1').css('zIndex',10);
+			},500);
+		}
+	});
+</script>

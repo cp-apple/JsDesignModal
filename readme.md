@@ -22,3 +22,5 @@
 * 2017-11-02 tag：深浅拷贝，jQuery extend方法的实现
 * 2017-11-06 tag：[css flex布局](cssDemo/flex-layout.html),数组扁平化及求数组的最大最小值
 * 2017-11-07 tag：数组中查找指定元素，indexOf方法的实现
+* 2017-11-22 tag：流程进度组件封装（TestDemo/eventProcess）
+* 2017-11-29 tag：css：box-shadow,text-shadow,rotate3d产品展示效果，css3渐变linear-gradient、radial-gradient

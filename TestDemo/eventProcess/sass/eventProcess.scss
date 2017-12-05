@@ -1,0 +1,149 @@
+.procBox{
+    width:300px;
+	ul{
+        margin: 30px 0 0 0;
+        padding: 0;
+        list-style: none;
+        position: relative;      
+       
+        li{
+            position: relative;
+            padding-left: 90px;
+            .vLine{                
+                position: absolute;
+                top: 20px;
+                left: 50px;
+                margin-left: -10px;
+                width: 10px;
+                height:133%;
+                background: #afdcf8;                
+            }
+            &.end .vLine{
+                background: #ddd;                    
+            }
+            &.active .vLine{
+                background: rgba(250,200,70,.5);                    
+            }
+            &:last-child .vLine{
+                height:0;
+            }            
+            .proNum{
+                display: block;
+                position: absolute;
+                width: 35px;
+                height: 35px;
+                font-family: 'ecoico';
+                speak: none;
+                font-style: normal;
+                font-weight: normal;
+                font-variant: normal;
+                text-transform: none;
+                font-size: 18px;
+                line-height: 35px;
+                position: absolute;
+                color: #fff;
+                background: #46a4da;
+                border-radius: 50%;
+                box-shadow: 0 0 0 7px #afdcf8;
+                text-align: center;
+                left: 50px;
+                top: 5px;
+                margin: 0 0 0 -25px;
+            }
+             &.end .proNum{
+                background: #999;
+                box-shadow: 0 0 0 8px #ddd;
+            }
+            &.active .proNum{
+                background: #f6a851;
+                box-shadow: 0 0 0 8px rgba(250,200,70,.5);
+                animation:myAnima 2s infinite alternate;
+            }
+            .proName{
+                margin: 0 0 15px 0;
+                background: #46a4da;
+                color: #fff;
+                padding: 10px;
+                font-size: 14px;
+                font-weight: 300;
+                line-height: 1.8;
+                position: relative;
+                border-radius: 5px;  
+                cursor: pointer;  
+                &:after{
+                    right: 100%;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                    border-right-color: #46a4da;
+                    border-width: 10px;
+                    top: 10px;
+                }            
+            }          
+            &.end .proName{
+               background: #999;
+                &:after{
+                    border-right-color: #999;
+                }
+            }
+            &.active .proName{
+               background: #f6a851;
+                &:after{
+                    border-right-color: #f6a851;
+                }
+            }
+        }
+    }
+}
+
+@keyframes myAnima {
+    from { box-shadow: 0 0 0 6px rgba(250,200,70,.5);}
+    to { box-shadow: 0 0 0 8px rgba(250,200,70,.7);}
+}
+
+@-webkit-keyframes pulse{
+from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+}
+50% {
+    -webkit-transform: scale3d(1.05, 1.05, 1.05);
+    transform: scale3d(1.05, 1.05, 1.05);
+}
+to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+}
+}
+
+@-webkit-keyframes fadeInLeft{
+
+from {
+    opacity: 0;
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+}
+to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+}
+}
+
+@-webkit-keyframes fadeInRight{
+
+from {
+    opacity: 0;
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+}
+to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+}
+}
+     

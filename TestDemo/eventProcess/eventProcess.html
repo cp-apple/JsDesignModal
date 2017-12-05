@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>事件进程时间戳</title>
+	<link rel="stylesheet" href="css/eventProcess.css">
+	<style>
+		input,button{
+			margin-right: 10px;
+			height:30px;
+			border:1px solid #ddd;
+			border-radius: 5px;
+			text-align: center;
+		}
+		button{
+			background-color: #aaccee;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<input id="goNumIpt" type="number" value="5"><button type="button" id="btn">点击设置进度</button>
+	<div id="testBox2"></div>
+	<hr/>
+	<div id="testBox"></div>
+</body>
+</html>
+<script src='js/jquery-1.9.1.min.js'></script>
+<script src='js/eventProcess.js'></script>
+<script>
+	$('#testBox2').eventProcess({
+		goNum:6
+	});
+
+	$('#btn').click(function(){
+		var num=$('#goNumIpt').val();
+		$('#testBox2').eventProcess('setGoNum',num);
+	});
+
+	var initData=[{proNum:1,proName:'采集资料'},{proNum:2,proName:'采集中...'},{proNum:3,proName:'等待处理'},{proNum:4,proName:'后台接件'},{proNum:5,proName:'办理中'},{proNum:6,proName:'结果通知'},{proNum:7,proName:'等待确认'},{proNum:8,proName:'结果确认'},{proNum:9,proName:'等待交接'}];
+
+	$('#testBox').eventProcess({
+		eleBox:'#testBox',
+		width:500,
+		initData:initData,
+		goNum:3,
+		isOdd:false,
+		methods:{
+			loadSuccess:function(dom){
+				dom.find('.proName:even').css('animation','fadeInRight 1s 1 alternate');
+				dom.find('.proName:odd').css('animation','fadeInLeft 1s 1 alternate');
+			},
+			itemClick:function(item){
+				item.find('.proName').css('animation','pulse 1s 1 alternate');
+			}
+		}		
+	});
+</script>
