@@ -24,3 +24,4 @@
 * 2017-11-07 tag：数组中查找指定元素，indexOf方法的实现
 * 2017-11-22 tag：流程进度组件封装（TestDemo/eventProcess）
 * 2017-11-29 tag：css：box-shadow,text-shadow,rotate3d产品展示效果，css3渐变linear-gradient、radial-gradient
+* 2019-02-22 tag：俩年后的今天，测试一下推送
