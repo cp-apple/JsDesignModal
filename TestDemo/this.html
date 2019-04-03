@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>理解javascript的this</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+	// 1.作为对象的方法调用
+	let obj1={
+		name:'obj1',
+		getName(){
+			console.log(this.name);
+		}
+	};
+	obj1.getName();   //obj1
+
+	// 2.为普通函数调用
+	var name='global';
+	var getName=function(){
+		return this.name;
+	}
+	console.log(getName());  //global
+
+	// 3.构造器调用
+	var obj2=function(){
+		this.name='obj2';
+	}
+	var o2=new obj2();
+	console.log(o2.name);  //obj2
+
+	// 4.call,apply改变this指向
+	let a={
+		name:'aa',
+		getName(){
+			console.log(this.name)
+		},
+	};
+	let b={
+		name:'bb',
+	};
+	a.getName();  //aa
+	a.getName.call(b);  //bb
+	a.getName.apply(b);  //bb
+
+</script>
