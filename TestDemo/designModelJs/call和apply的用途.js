@@ -45,6 +45,8 @@ B.prototype.getName=function(){
 let bb=new B('cp');
 bb.getName();  //cp
 // 3.2.操作arguments
+/* 函数的参数列表 arguments 是一个类数组对象，虽然它也有“下标”，但它并非真正的数组，
+所以也不能像数组一样，进行排序操作或者往集合里添加一个新的元素。 */ 
 (function(){
 	Array.prototype.shift.call(arguments,3);  //删除arguments开头的第一个元素
 	Array.prototype.unshift.call(arguments,3);  //向arguments开头的添加一个元素
