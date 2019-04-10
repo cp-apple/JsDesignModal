@@ -236,4 +236,23 @@
 	console.log(book.alikeBokk);   //"css book", "html book", "xml book", "as book"
 
 	//5、如虎添翼————寄生式继承
+	let fa=function(){
+		this.name='fa';
+		this.getName=function(){
+			console.log(this.name);
+		};
+	}
+	let child=function(name){
+		fa.call(this);
+		this.name='child';
+	};
+	(function(){
+		let fn=function(){};
+		fn.prototype=fa.prototype;
+		child.prototype=new fn();
+		child.prototype.constructor=child;  //修复下构造函数
+	})();
+
+	let a=new child();
+	a.getName();  //child
 </script>
