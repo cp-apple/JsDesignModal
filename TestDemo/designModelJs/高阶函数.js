@@ -115,14 +115,150 @@ func=func.before(function(){
 func(); //1,2,3
 
 // 四、高阶函数的其他应用
-// 1.函数柯里化
+// 1. 函数柯里化
 var num = (function(num){
   if(num<=1){
-      return 1;
+    return 1;
   }else{
-      return num*arguments.callee(num-1);   //arguments.callee
+    return num*arguments.callee(num-1);   //arguments.callee可以用于引用该函数的函数体内当前正在执行的函数
   }
 })(5);
-console.log(num); //结果为120
+console.log(num); //结果为120。 5*4*3*2*1=120
+
+// 遍历本月每天的开销并求出它们的总和
+function currying(fn){
+	let args=[];
+	return function(){
+		if(arguments.length===0){
+			return fn.apply(this,args);
+		}else{
+			[].push.apply(args,arguments);
+			return arguments.callee;
+		}
+	};
+}
+let cost=(function(){
+	let money=0;
+	return function(){	
+		for (var i = 0; i < arguments.length; i++) {
+			money+=arguments[i];
+		}
+		return money;
+	};
+})();
+const costFn = currying(cost);
+costFn(100);  //保存
+costFn(200);  //保存
+costFn(300);  //保存
+console.log(costFn());  //600
+
+// 2. uncurrying 反柯里化的作用在与扩大函数的适用性，使本来作为特定对象所拥有的功能的函数可以被任意对象所用.
+Function.prototype.uncurrying=function(){
+	let self=this;
+	return function(){
+		let obj=Array.prototype.shift.call(arguments);
+		return self.apply(obj,arguments);
+		// 调用push(arguments,4)后。这一句相当于 Array.prototype.push(obj,4)
+	};
+};
+
+let push=Array.prototype.push.uncurrying();
+
+(function(){
+	push(arguments,4);
+	console.log(arguments);  // arguments { '0': 1, '1': 2, '2': 3, '3': 4 }
+})(1,2,3);
+
+// 3. 函数节流 函数被触发的频率太高
+let throttle=function(fn,interval){
+	let __self=fn,  //保存需要被延迟执行的函数
+			timer,
+			firstTime=true;  //是否是第一次执行
+	return function(){
+		let __me=this,
+				args=arguments;
+		if(firstTime){   //第一次执行不用延迟执行
+			__self.apply(__me,args);
+			return firstTime=false;
+		}
+		if(timer){  //timer存在说明前一次延迟执行还没有结束
+			return false;
+		}
+		timer=setTimeout(function(){
+			clearTimeout(timer);
+			timer=null;
+			__self.apply(__me,args);
+		},interval||500);
+	};
+};
+
+window.onresize=throttle(function(){
+	console.log(11);
+},3000);
+
+// 4. 分时函数
+// 例：每1s建1000个dom改为每200ms建8个dom
+// arr:需创建的dom数据，fn:创建dom的逻辑函数,count:每200ms创建多少个dom
+let timeChunk=function(arr,fn,count){
+	let obj,t;
+	let len=arr.length;
+	let star=function(){
+		for(let i=0;i<Math.min(count||1,arr.length);i++){
+			let obj='dom:'+arr.shift();
+			fn(obj);
+		}
+	};
+
+	return function(){
+		t=setInterval(function(){
+			if(arr.length===0){  //如果全部已建好
+				clearInterval(t);
+			}
+			star();
+		},200);
+	};
+};
+
+var arr=[];
+for (let i = 0; i < 1000; i++) {
+	arr.push(i);
+}
+let renderDom=timeChunk(arr,function(n){
+	let div=document.createElement('div');
+	div.innerHTML=n;
+	document.body.appendChild(div);
+},8);
+
+renderDom();
+
+// 5. 惰性加载函数
+let addEvent=function(elem,type,handler){
+	if(window.addEventListener){
+		addEvent=function(elem,type,handler){
+			elem.addEventListener(type,handler,false);
+		};
+	}else if(window.attachEvent){
+		addEvent=function(elem,type,handler){
+			elem.attachEvent('on'+type,handler);
+		};
+	}
+	addEvent(elem,type,handler);
+};
+
+let body=document.body;
+addEvent(body,'click',function(){
+	console.log(1);
+});
+
+addEvent(body,'click',function(){
+	console.log(2);
+});
+
+
+
+
+
+
+
 
 
