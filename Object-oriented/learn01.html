@@ -250,6 +250,7 @@
 		let fn=function(){};
 		fn.prototype=fa.prototype;
 		child.prototype=new fn();
+		// 等同于child.prototype=Object.create(fa.prototype);
 		child.prototype.constructor=child;  //修复下构造函数
 	})();
 
