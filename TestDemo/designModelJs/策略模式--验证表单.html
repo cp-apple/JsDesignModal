@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>策略模式--验证表单</title>
+</head>
+<body>
+	<form id="form" action="">
+		<p><label>用户名：</label><input name="username" type="text"></p>
+		<p><label>手机号：</label><input name="usertel" type="text"></p>
+		<p><label>密码：</label><input name="userpwd" type="password"></p>
+		<button>提交</button>
+	</form>
+</body>
+</html>
+<script>
+	let strategies={
+		isEmpty:function(value,errorMsg){
+			if(value.length===0){
+				return errorMsg;
+			}
+		},
+		minLength:function(value,length,errorMsg){
+			if(value.length<length){
+				return errorMsg;
+			}
+		},
+		isMobile:function(value,errorMsg){
+			if(!(/^1[34578]\d{9}$/.test(value))){
+				return errorMsg;
+			}
+		},
+	};
+
+	let validator=function(){
+		this.cache=[];  //用于缓存验证规则
+	}
+	validator.prototype.add=function(dom,rule,errMsg){
+		let arr=rule.split(':');
+		this.cache.push(function(){
+			let ruleName=arr.shift();
+			arr.unshift(dom.value);
+			arr.push(errMsg);
+			console.log(arr);
+			return strategies[ruleName].apply(dom,arr);
+		});
+	};
+	validator.prototype.star=function(){
+		for (var i = 0; i < this.cache.length; i++) {
+			let msg=this.cache[i]();
+			if(msg){
+				return msg;
+			}
+		}
+	};
+
+	// 提交按钮
+	let form = document.getElementById('form');
+	// 添加表单项的验证方法
+	let validateFunc=function(){
+		let vali=new validator();
+		vali.add(form.username,'isEmpty','用户名不能为空。');
+		vali.add(form.usertel,'isMobile','手机号格式不对。');
+		vali.add(form.userpwd,'minLength:6','密码最小长度为6。');
+		let msg=vali.star();
+		return msg;
+	};
+
+	form.onsubmit=function(){
+		let errMsg=validateFunc();
+		if(errMsg){
+			alert(errMsg);
+			return false;
+		}
+	};
+</script>
