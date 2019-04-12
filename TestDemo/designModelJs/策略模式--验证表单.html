@@ -31,42 +31,91 @@
 		},
 	};
 
-	let validator=function(){
-		this.cache=[];  //用于缓存验证规则
-	}
-	validator.prototype.add=function(dom,rule,errMsg){
-		let arr=rule.split(':');
-		this.cache.push(function(){
-			let ruleName=arr.shift();
-			arr.unshift(dom.value);
-			arr.push(errMsg);
-			console.log(arr);
-			return strategies[ruleName].apply(dom,arr);
-		});
+	// let validator=function(){
+	// 	this.cache=[];  //用于缓存验证规则
+	// }
+	// validator.prototype.add=function(dom,rule,errMsg){
+	// 	let arr=rule.split(':');
+	// 	this.cache.push(function(){
+	// 		let ruleName=arr.shift();
+	// 		arr.unshift(dom.value);
+	// 		arr.push(errMsg);
+	// 		return strategies[ruleName].apply(dom,arr);
+	// 	});
+	// };
+	// validator.prototype.start=function(){
+	// 	for (var i = 0; i < this.cache.length; i++) {
+	// 		let msg=this.cache[i]();
+	// 		if(msg){
+	// 			return msg;
+	// 		}
+	// 	}
+	// };
+
+	// let form = document.getElementById('form');
+	// // 添加表单项的验证方法
+	// let validateFunc=function(){
+	// 	let vali=new validator();
+	// 	vali.add(form.username,'isEmpty','用户名不能为空。');
+	// 	vali.add(form.usertel,'isMobile','手机号格式不对。');
+	// 	vali.add(form.userpwd,'minLength:6','密码最小长度为6。');
+	// 	let msg=vali.start();
+	// 	return msg;
+	// };
+
+	// // 提交按钮
+	// form.onsubmit=function(){
+	// 	let errMsg=validateFunc();
+	// 	if(errMsg){
+	// 		alert(errMsg);
+	// 		return false;
+	// 	}
+	// };
+
+	// 一个表单项添加多个验证
+	let validator2=function(){
+		this.cache=[]; 
 	};
-	validator.prototype.star=function(){
+	validator2.prototype.add=function(dom,rules){
+		let __self=this;
+		for (var i = 0; i < rules.length; i++) {
+			(function(rule){			
+				let arr=rule.strategy.split(':');
+				let errMsg=rule.errMsg;
+				__self.cache.push(function(){
+					let ruleName=arr.shift();
+					arr.unshift(dom.value);
+					arr.push(errMsg);
+					return strategies[ruleName].apply(dom,arr);
+				});
+			})(rules[i]);
+		}
+	};
+	validator2.prototype.start=function(){
 		for (var i = 0; i < this.cache.length; i++) {
 			let msg=this.cache[i]();
 			if(msg){
-				return msg;
+   			return msg;
 			}
 		}
 	};
-
-	// 提交按钮
-	let form = document.getElementById('form');
-	// 添加表单项的验证方法
-	let validateFunc=function(){
-		let vali=new validator();
-		vali.add(form.username,'isEmpty','用户名不能为空。');
-		vali.add(form.usertel,'isMobile','手机号格式不对。');
-		vali.add(form.userpwd,'minLength:6','密码最小长度为6。');
-		let msg=vali.star();
+	let form2 = document.getElementById('form');
+	let validateFunc2=function(){
+		let vali=new validator2();
+		vali.add(form2.username,[
+			{
+				strategy:'isEmpty',
+				errMsg:'用户名不能为空。'
+			},{
+				strategy:'minLength:8',
+				errMsg:'用户名长度最小为10。'
+			}
+		]);
+		let msg=vali.start();
 		return msg;
 	};
-
-	form.onsubmit=function(){
-		let errMsg=validateFunc();
+	form2.onsubmit=function(){
+		let errMsg=validateFunc2();
 		if(errMsg){
 			alert(errMsg);
 			return false;

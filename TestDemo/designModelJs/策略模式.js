@@ -91,7 +91,7 @@ validator.prototype.add=function(dom,rule,errMsg){
 		return strategies[ruleName].apply(dom,arr);
 	});
 };
-validator.prototype.star=function(){
+validator.prototype.start=function(){
 	for (var i = 0; i < this.cache.length; i++) {
 		let msg=this.cache[i]();
 		if(msg){
@@ -99,3 +99,6 @@ validator.prototype.star=function(){
 		}
 	}
 };
+
+
+
