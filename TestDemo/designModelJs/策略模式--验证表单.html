@@ -74,7 +74,7 @@
 
 	// 一个表单项添加多个验证
 	let validator2=function(){
-		this.cache=[]; 
+		this.cache=[];  //用于缓存验证规则
 	};
 	validator2.prototype.add=function(dom,rules){
 		let __self=this;
